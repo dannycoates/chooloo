@@ -9,7 +9,7 @@ const validateIV = route_id => {
   return route_id.match(/^[0-9a-fA-F]{24}$/) !== null;
 };
 
-module.exports = function (req, res, next) {
+module.exports = function (req, res) {
   const newId = crypto.randomBytes(5).toString('hex');
   let meta;
 

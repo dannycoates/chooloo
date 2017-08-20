@@ -107,7 +107,8 @@ function copyToClipboard(str) {
 const LOCALIZE_NUMBERS = !!(
   typeof Intl === 'object' &&
   Intl &&
-  typeof Intl.NumberFormat === 'function'
+  typeof Intl.NumberFormat === 'function' &&
+  typeof navigator === 'object'
 );
 
 const UNITS = ['B', 'kB', 'MB', 'GB'];
@@ -136,7 +137,7 @@ function allowedCopy() {
 
 const ONE_DAY_IN_MS = 86400000;
 
-export {
+module.exports = {
   allowedCopy,
   bytes,
   percent,

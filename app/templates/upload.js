@@ -1,5 +1,6 @@
 const html = require('choo/html')
 const progress = require('./progress')
+const { bytes } = require('../utils')
 
 module.exports = function (state, emit) {
   const sender = state.sender
@@ -8,7 +9,7 @@ module.exports = function (state, emit) {
     <div class="title" id="upload-filename">${
       state.translate('uploadingPageProgress', {
         filename: sender.file.name,
-        size: sender.file.size // TODO bytes
+        size: bytes(sender.file.size)
       })
     }</div>
     <div class="description"></div>
