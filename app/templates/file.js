@@ -1,5 +1,5 @@
 const html = require('choo/html')
-const assets = require('../assets')
+const assets = require('../../common/assets')
 
 function timeLeft(milliseconds) {
   const minutes = Math.floor(milliseconds / 1000 / 60);

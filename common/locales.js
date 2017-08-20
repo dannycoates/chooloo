@@ -38,7 +38,7 @@ const instance = {
       }
       instance.getTranslator = function (name) {
         const f = middleware.fileSystem.readFileSync(
-          middleware.getFilenameFromUrl(`/public/locales/${name}/send.js`)
+          middleware.getFilenameFromUrl(instance.get(name))
         );
         return _eval(f.toString())
       }

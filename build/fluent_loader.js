@@ -9,9 +9,9 @@ module.exports = function (source) {
   return `
 module.exports = \`
 if (typeof window === 'undefined') {
-  var MessageContext = require('fluent').MessageContext;
+  var fluent = require('fluent');
 }
-const ctx = new MessageContext('${locale}');
+const ctx = new fluent.MessageContext('${locale}');
 ctx.addMessages(\\\`${source}\\\`);
 function translate(id, data) {
   const msg = ctx.getMessage(id);

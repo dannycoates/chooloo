@@ -1,5 +1,5 @@
-const assets = require('../app/assets')
-const locales = require('../app/locales')
+const assets = require('../common/assets')
+const locales = require('../common/locales')
 const routes = require('./routes')
 
 module.exports = function (app, devServer) {

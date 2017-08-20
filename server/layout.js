@@ -1,6 +1,6 @@
 const html = require('choo/html')
-const assets = require('../app/assets')
-const locales = require('../app/locales')
+const assets = require('../common/assets')
+const locales = require('../common/locales')
 
 module.exports = function (state, body = '') {
   const firaTag = state.fira ? html`<link rel="stylesheet" type="text/css" href="https://code.cdn.mozilla.net/fonts/fira.css" />` : ''
@@ -29,8 +29,8 @@ module.exports = function (state, body = '') {
     ${firaTag}
     <script src="/jsconfig.js"></script>
     <script defer src="${assets.get('vendor.js')}"></script>
-    <script defer src="${assets.get('app.js')}"></script>
     <script defer src="${locales.get(state.locale)}"></script>
+    <script defer src="${assets.get('app.js')}"></script>
   </head>
   <body>
     <header class="header">

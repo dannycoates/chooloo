@@ -1,6 +1,6 @@
 const routes = require('../../app/routes')
 const layout = require('../layout')
-const locales = require('../../app/locales')
+const locales = require('../../common/locales')
 
 module.exports = function (req, res) {
   res.send(routes.toString('/', {

@@ -1,5 +1,5 @@
 const html = require('choo/html')
-const assets = require('../assets')
+const assets = require('../../common/assets')
 const fileList = require('./file_list')
 
 module.exports = function (state, emit) {

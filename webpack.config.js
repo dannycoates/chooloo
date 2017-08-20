@@ -4,11 +4,11 @@ const ManifestPlugin = require('webpack-manifest-plugin')
 
 module.exports = {
   entry: {
-    vendor: ['fluent', 'choo'],
+    vendor: ['babel-polyfill', 'fluent', 'choo'],
     app: ['./app/main.js']
   },
   output: {
-    filename: '[name].[chunkhash].js',
+    filename: '[name].[chunkhash:8].js',
     path: path.resolve(__dirname, 'dist'),
     publicPath: '/'
   },
@@ -19,19 +19,37 @@ module.exports = {
         loader: 'babel-loader',
         include: [
           path.resolve(__dirname, 'app'),
-          path.dirname(require.resolve('fluent'))
+          path.resolve(__dirname, 'common')
         ],
         options: {
           babelrc: false,
-          presets: [['es2015', { modules: false }]],
+          presets: [['env', { modules: false }]],
           plugins: ['yo-yoify']
         }
+      },
+      {
+        test: /\.js$/,
+        include: [
+          path.dirname(require.resolve('fluent'))
+        ],
+        use: [
+          {
+            loader: 'expose-loader',
+            options: 'fluent'
+          },
+          {
+            loader: 'babel-loader',
+            options: {
+              presets: [['env', { modules: false }]]
+            }
+          }
+        ]
       },
       {
         test: /\.(svg|png|jpg)$/,
         loader: 'file-loader',
         options: {
-          name: '[name].[hash].[ext]'
+          name: '[name].[hash:8].[ext]'
         }
       },
       {
@@ -40,7 +58,7 @@ module.exports = {
           {
             loader: 'file-loader',
             options: {
-              name: '[name].[hash].[ext]'
+              name: '[name].[hash:8].[ext]'
             }
           },
           'extract-loader',
@@ -49,24 +67,12 @@ module.exports = {
         ]
       },
       {
-        test: /\.html$/,
-        use: [
-          {
-            loader: 'html-loader',
-            options: {
-              interpolate: 'require',
-              minimize: false
-            }
-          }
-        ]
-      },
-      {
         test: /\.ftl$/,
         use: [
           {
             loader: 'file-loader',
             options: {
-              name: '[path][name].js'
+              name: '[path][name].[hash:8].js'
             }
           },
           'extract-loader',
