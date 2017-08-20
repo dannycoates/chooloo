@@ -5,7 +5,7 @@ const ManifestPlugin = require('webpack-manifest-plugin')
 module.exports = {
   entry: {
     vendor: ['fluent', 'choo'],
-    app: ['./app/index.js']
+    app: ['./app/main.js']
   },
   output: {
     filename: '[name].[chunkhash].js',

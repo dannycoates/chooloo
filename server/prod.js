@@ -1,11 +1,11 @@
 const express = require('express')
 const path = require('path')
-const index = require('./routes')
+const routes = require('./routes')
 
-const server = express()
+const app = express()
 
-server.use(express.static(path.resolve(__dirname, '../dist/')));
+app.use(express.static(path.resolve(__dirname, '../dist/')));
 
-server.get('/', index)
+routes(app)
 
-server.listen(1443)
+app.listen(1443)

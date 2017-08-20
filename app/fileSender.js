@@ -5,6 +5,8 @@ export default class FileSender extends Nanobus {
   constructor(file) {
     super('FileSender');
     this.file = file;
+    this.msg = 'importingFile';
+    this.progress = [0, 1];
     this.iv = window.crypto.getRandomValues(new Uint8Array(12));
     this.uploadXHR = new XMLHttpRequest();
     this.key = window.crypto.subtle.generateKey(
@@ -23,7 +25,7 @@ export default class FileSender extends Nanobus {
         return reject();
       }
       const xhr = new XMLHttpRequest();
-      xhr.open('post', '/delete/' + fileId, true);
+      xhr.open('post', '/api/delete/' + fileId, true);
       xhr.setRequestHeader('Content-Type', 'application/json');
 
       xhr.onreadystatechange = () => {
@@ -34,6 +36,10 @@ export default class FileSender extends Nanobus {
 
       xhr.send(JSON.stringify({ delete_token: token }));
     });
+  }
+
+  get progressRatio() {
+    return this.progress[0] / this.progress[1];
   }
 
   cancel() {
@@ -67,13 +73,15 @@ export default class FileSender extends Nanobus {
 
       xhr.upload.addEventListener('progress', e => {
         if (e.lengthComputable) {
-          this.emit('progress', [e.loaded, e.total]);
+          this.progress = [e.loaded, e.total];
+          this.emit('progress', this.progress);
         }
       });
 
       xhr.onreadystatechange = () => {
         if (xhr.readyState === XMLHttpRequest.DONE) {
           if (xhr.status === 200) {
+            this.msg = 'completed'
             const responseObj = JSON.parse(xhr.responseText);
             return resolve({
               url: responseObj.url,
@@ -82,11 +90,12 @@ export default class FileSender extends Nanobus {
               deleteToken: responseObj.delete
             });
           }
+          this.msg = 'errored'
           reject(xhr.status);
         }
       };
 
-      xhr.open('post', '/upload', true);
+      xhr.open('post', '/api/upload', true);
       xhr.setRequestHeader(
         'X-File-Metadata',
         JSON.stringify({
@@ -102,6 +111,7 @@ export default class FileSender extends Nanobus {
     this.emit('loading');
     const key = await this.key;
     const plaintext = await this.readFile();
+    this.msg = 'encryptingFile';
     this.emit('encrypting');
     const encrypted = await window.crypto.subtle.encrypt(
       {

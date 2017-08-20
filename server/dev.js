@@ -1,9 +1,9 @@
 const assets = require('../app/assets')
 const locales = require('../app/locales')
-const index = require('./routes')
+const routes = require('./routes')
 
 module.exports = function (app, devServer) {
   assets.setMiddleware(devServer.middleware)
   locales.setMiddleware(devServer.middleware)
-  app.get('/', index)
+  routes(app)
 }
