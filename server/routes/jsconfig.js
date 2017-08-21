@@ -1,7 +1,7 @@
-const config = require('../config')
-const version = { version: 'a', commit: 'b' } // TODO
+const config = require('../config');
+const version = { version: 'a', commit: 'b' }; // TODO
 
-let sentry = ''
+let sentry = '';
 if (config.sentry_id) {
   sentry = `
 var RAVEN_CONFIG = {
@@ -18,12 +18,12 @@ var RAVEN_CONFIG = {
   }
 }
 var SENTRY_ID = '${config.sentry_id}';
-`
+`;
 }
 
-let ga = ''
+let ga = '';
 if (config.analytics_id) {
-  ga = `var GOOGLE_ANALYTICS_ID = ${config.analytics_id};`
+  ga = `var GOOGLE_ANALYTICS_ID = ${config.analytics_id};`;
 }
 
 const jsconfig = `
@@ -36,9 +36,9 @@ var MAXFILESIZE = ${config.max_file_size};
 var EXPIRE_SECONDS = ${config.expire_seconds};
 ${ga}
 ${sentry}
-`
+`;
 
-module.exports = function (req, res) {
+module.exports = function(req, res) {
   res.set('Content-Type', 'application/javascript');
   res.send(jsconfig);
-}
+};

@@ -47,26 +47,24 @@ function loadShim() {
 
 async function canHasSend() {
   try {
-    const key = await window.crypto.subtle
-      .generateKey(
-        {
-          name: 'AES-GCM',
-          length: 128
-        },
-        true,
-        ['encrypt', 'decrypt']
-      )
+    const key = await window.crypto.subtle.generateKey(
+      {
+        name: 'AES-GCM',
+        length: 128
+      },
+      true,
+      ['encrypt', 'decrypt']
+    );
 
-    await window.crypto.subtle
-          .encrypt(
-            {
-              name: 'AES-GCM',
-              iv: window.crypto.getRandomValues(new Uint8Array(12)),
-              tagLength: 128
-            },
-            key,
-            new ArrayBuffer(8)
-          )
+    await window.crypto.subtle.encrypt(
+      {
+        name: 'AES-GCM',
+        iv: window.crypto.getRandomValues(new Uint8Array(12)),
+        tagLength: 128
+      },
+      key,
+      new ArrayBuffer(8)
+    );
     return true;
   } catch (err) {
     return loadShim();
@@ -130,14 +128,14 @@ function allowedCopy() {
 }
 
 function delay(delay = 100) {
-  return new Promise(resolve => setTimeout(resolve, delay))
+  return new Promise(resolve => setTimeout(resolve, delay));
 }
 
 function fadeOut(id) {
   const classes = document.getElementById(id).classList;
-  classes.remove('fadeIn')
-  classes.add('fadeOut')
-  return delay(300)
+  classes.remove('fadeIn');
+  classes.add('fadeOut');
+  return delay(300);
 }
 
 const ONE_DAY_IN_MS = 86400000;

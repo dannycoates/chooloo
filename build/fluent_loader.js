@@ -1,9 +1,9 @@
-module.exports = function (source) {
+module.exports = function(source) {
   const localeExp = this.options.locale || /([^\/]+)\/[^\/]+\.ftl$/;
-  const result = localeExp.exec(this.resourcePath)
-  const locale = result && result[1]
+  const result = localeExp.exec(this.resourcePath);
+  const locale = result && result[1];
   if (!locale) {
-    throw new Error(`couldn't find locale in: ${this.resourcePath}`)
+    throw new Error(`couldn't find locale in: ${this.resourcePath}`);
   }
   // TODO escape ` in source?
   return `
@@ -23,5 +23,5 @@ if (typeof window === 'undefined') {
 else {
   window.translate = translate;
 }
-\``
-}
+\``;
+};

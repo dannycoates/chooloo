@@ -1,25 +1,24 @@
-const gen = require('../build/generate_l10n_map')
+const gen = require('../build/generate_l10n_map');
 
-const isServer = typeof gen === 'function'
-const prefix = isServer ? '/' : ''
+const isServer = typeof gen === 'function';
+const prefix = isServer ? '/' : '';
 let manifest = {};
 try {
-  manifest = require('../dist/manifest.json')
-}
-catch (e) {}
+  manifest = require('../dist/manifest.json');
+} catch (e) {}
 
-const locales = isServer ? manifest : gen
+const locales = isServer ? manifest : gen;
 
 function getLocale(name) {
-  return prefix + locales[`public/locales/${name}/send.ftl`]
+  return prefix + locales[`public/locales/${name}/send.ftl`];
 }
 
 function serverTranslator(name) {
-  return require(`../dist/${locales[`public/locales/${name}/send.ftl`]}`)
+  return require(`../dist/${locales[`public/locales/${name}/send.ftl`]}`);
 }
 
 function browserTranslator() {
-  return locales.translate
+  return locales.translate;
 }
 
 const translator = isServer ? serverTranslator : browserTranslator;
@@ -27,23 +26,23 @@ const translator = isServer ? serverTranslator : browserTranslator;
 const instance = {
   get: getLocale,
   getTranslator: translator,
-  setMiddleware: function (middleware) {
+  setMiddleware: function(middleware) {
     if (middleware) {
-      const _eval = require('require-from-string')
+      const _eval = require('require-from-string');
       instance.get = function getLocaleWithMiddleware(name) {
         const f = middleware.fileSystem.readFileSync(
           middleware.getFilenameFromUrl('/manifest.json')
         );
-        return prefix + (JSON.parse(f)[`public/locales/${name}/send.ftl`]);
-      }
-      instance.getTranslator = function (name) {
+        return prefix + JSON.parse(f)[`public/locales/${name}/send.ftl`];
+      };
+      instance.getTranslator = function(name) {
         const f = middleware.fileSystem.readFileSync(
           middleware.getFilenameFromUrl(instance.get(name))
         );
-        return _eval(f.toString())
-      }
+        return _eval(f.toString());
+      };
     }
   }
-}
+};
 
-module.exports = instance
+module.exports = instance;

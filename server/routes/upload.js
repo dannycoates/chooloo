@@ -1,6 +1,6 @@
-const crypto = require('crypto')
-const storage = require('../storage')
-const config = require('../config')
+const crypto = require('crypto');
+const storage = require('../storage');
+const config = require('../config');
 const mozlog = require('../log');
 
 const log = mozlog('send.upload');
@@ -9,7 +9,7 @@ const validateIV = route_id => {
   return route_id.match(/^[0-9a-fA-F]{24}$/) !== null;
 };
 
-module.exports = function (req, res) {
+module.exports = function(req, res) {
   const newId = crypto.randomBytes(5).toString('hex');
   let meta;
 
@@ -46,7 +46,7 @@ module.exports = function (req, res) {
           id: newId
         });
       } catch (e) {
-        log.error('upload', e)
+        log.error('upload', e);
         if (e.message === 'limit') {
           return res.sendStatus(413);
         }
@@ -62,4 +62,4 @@ module.exports = function (req, res) {
       log.info('DeleteError:', newId);
     }
   });
-}
+};

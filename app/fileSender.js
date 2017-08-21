@@ -81,8 +81,8 @@ export default class FileSender extends Nanobus {
       xhr.onreadystatechange = () => {
         if (xhr.readyState === XMLHttpRequest.DONE) {
           if (xhr.status === 200) {
-            this.progress = [1,1]
-            this.msg = 'notifyUploadDone'
+            this.progress = [1, 1];
+            this.msg = 'notifyUploadDone';
             const responseObj = JSON.parse(xhr.responseText);
             return resolve({
               url: responseObj.url,
@@ -91,7 +91,7 @@ export default class FileSender extends Nanobus {
               deleteToken: responseObj.delete
             });
           }
-          this.msg = 'errorPageHeader'
+          this.msg = 'errorPageHeader';
           reject(xhr.status);
         }
       };

@@ -1,19 +1,19 @@
-const fs = require('fs')
-const path = require('path')
+const fs = require('fs');
+const path = require('path');
 
 function kv(f) {
-  return `"${f}": require('../assets/${f}')`
+  return `"${f}": require('../assets/${f}')`;
 }
 
-module.exports = function () {
-  const files = fs.readdirSync(path.join(__dirname, '..', 'assets'))
+module.exports = function() {
+  const files = fs.readdirSync(path.join(__dirname, '..', 'assets'));
   const code = `module.exports = {
     ${files.map(kv).join(',\n')}
-  };`
+  };`;
   return {
     code,
     dependencies: files.map(f => require.resolve('../assets/' + f)),
     cacheable: false,
     extra: 'foo'
-  }
-}
+  };
+};

@@ -1,4 +1,4 @@
-const storage = require('../storage')
+const storage = require('../storage');
 
 function validateID(route_id) {
   return route_id.match(/^[0-9a-fA-F]{10}$/) !== null;
@@ -16,4 +16,4 @@ module.exports = async (req, res) => {
   } catch (e) {
     res.sendStatus(404);
   }
-}
+};

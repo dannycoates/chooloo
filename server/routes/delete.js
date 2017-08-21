@@ -1,10 +1,10 @@
-const storage = require('../storage')
+const storage = require('../storage');
 
 function validateID(route_id) {
   return route_id.match(/^[0-9a-fA-F]{10}$/) !== null;
 }
 
-module.exports = async function (req, res) {
+module.exports = async function(req, res) {
   const id = req.params.id;
 
   if (!validateID(id)) {
@@ -27,4 +27,4 @@ module.exports = async function (req, res) {
   } catch (e) {
     res.sendStatus(404);
   }
-}
+};

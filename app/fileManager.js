@@ -1,6 +1,6 @@
-import FileSender from './fileSender'
-import FileReceiver from './fileReceiver'
-import { delay, fadeOut } from './utils'
+import FileSender from './fileSender';
+import FileReceiver from './fileReceiver';
+import { delay, fadeOut } from './utils';
 
 function saveFile(file) {
   const dataView = new DataView(file.plaintext);
@@ -19,72 +19,70 @@ function saveFile(file) {
 }
 
 function openLinksInNewTab(links, should = true) {
-  links = links || Array.from(document.querySelectorAll('a:not([target])'))
+  links = links || Array.from(document.querySelectorAll('a:not([target])'));
   if (should) {
     links.forEach(l => {
       l.setAttribute('target', '_blank');
       l.setAttribute('rel', 'noopener noreferrer');
     });
-  }
-  else {
+  } else {
     links.forEach(l => {
-        l.removeAttribute('target');
-        l.removeAttribute('rel');
-      });
+      l.removeAttribute('target');
+      l.removeAttribute('rel');
+    });
   }
-  return links
+  return links;
 }
 
-export default function (state, emitter) {
+export default function(state, emitter) {
   function render() {
-    emitter.emit('render')
+    emitter.emit('render');
   }
 
-  emitter.on('delete', async (file) => {
+  emitter.on('delete', async file => {
     try {
-      await FileSender.delete(file.fileId, file.deleteToken)
-      state.files = state.files.filter(f => f !== file)
-      state.panel = 'welcome'
-      state.upload = null
-      state.file = null
-      state.sender = null
-    }
-    catch (e) {}
-    render()
-  })
+      await FileSender.delete(file.fileId, file.deleteToken);
+      state.files = state.files.filter(f => f !== file);
+      state.panel = 'welcome';
+      state.upload = null;
+      state.file = null;
+      state.sender = null;
+    } catch (e) {}
+    render();
+  });
 
-  emitter.on('upload', async (file) => {
-    const sender = new FileSender(file)
-    sender.on('progress', render)
-    sender.on('encrypting', render)
-    state.file = file
-    state.sender = sender
-    state.panel = 'upload'
-    render()
-    const links = openLinksInNewTab()
-    await delay(200)
-    const info = await sender.upload()
-    await delay(1000)
-    await fadeOut('upload-progress')
-    state.panel = 'share'
-    state.upload = info
-    openLinksInNewTab(links, false)
-    render()
-  })
+  emitter.on('upload', async file => {
+    const sender = new FileSender(file);
+    sender.on('progress', render);
+    sender.on('encrypting', render);
+    state.file = file;
+    state.sender = sender;
+    state.panel = 'upload';
+    render();
+    const links = openLinksInNewTab();
+    await delay(200);
+    const info = await sender.upload();
+    await delay(1000);
+    await fadeOut('upload-progress');
+    state.panel = 'share';
+    state.upload = info;
+    openLinksInNewTab(links, false);
+    render();
+  });
 
-  emitter.on('download', async (file) => {
-    const url = `/api/download/${file.id}`
-    const receiver = new FileReceiver(url, file.key)
-    receiver.on('progress', render)
-    receiver.on('decrypting', render)
-    state.receiver = receiver
-    state.panel = 'download'
-    const links = openLinksInNewTab()
-    render()
-    const f = await receiver.download()
-    saveFile(f)
-    state.panel = 'completed'
-    openLinksInNewTab(links, false)
-    render()
-  })
+  emitter.on('download', async file => {
+    const url = `/api/download/${file.id}`;
+    const receiver = new FileReceiver(url, file.key);
+    receiver.on('progress', render);
+    receiver.on('decrypting', render);
+    state.receiver = receiver;
+    state.panel = 'download';
+    const links = openLinksInNewTab();
+    render();
+    const f = await receiver.download();
+    saveFile(f);
+    state.panel = 'completed';
+    openLinksInNewTab(links, false);
+    render();
+  });
 }

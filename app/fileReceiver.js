@@ -19,12 +19,12 @@ export default class FileReceiver extends Nanobus {
       ['decrypt']
     );
     this.url = url;
-    this.msg = 'importingFile'
-    this.progress = [0, 1]
+    this.msg = 'importingFile';
+    this.progress = [0, 1];
   }
 
   get progressRatio() {
-    return this.progress[0] / this.progress[1]
+    return this.progress[0] / this.progress[1];
   }
 
   downloadFile() {
@@ -68,7 +68,7 @@ export default class FileReceiver extends Nanobus {
   async download() {
     const key = await this.key;
     const file = await this.downloadFile();
-    this.msg = 'decryptingFile'
+    this.msg = 'decryptingFile';
     this.emit('decrypting');
     const plaintext = await window.crypto.subtle.decrypt(
       {
@@ -79,7 +79,7 @@ export default class FileReceiver extends Nanobus {
       key,
       file.data
     );
-    this.msg = 'downloadFinish'
+    this.msg = 'downloadFinish';
     return {
       plaintext,
       name: decodeURIComponent(file.name),

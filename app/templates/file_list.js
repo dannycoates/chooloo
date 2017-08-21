@@ -1,7 +1,7 @@
-const html = require('choo/html')
-const file = require('./file')
+const html = require('choo/html');
+const file = require('./file');
 
-module.exports = function (state, emit) {
+module.exports = function(state, emit) {
   const table = html`
   <table id="uploaded-files">
     <thead>
@@ -25,4 +25,4 @@ module.exports = function (state, emit) {
   </div>
   `;
   return div;
-}
+};

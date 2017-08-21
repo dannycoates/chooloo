@@ -1,5 +1,5 @@
-const html = require('choo/html')
-const assets = require('../../common/assets')
+const html = require('choo/html');
+const assets = require('../../common/assets');
 
 function timeLeft(milliseconds) {
   const minutes = Math.floor(milliseconds / 1000 / 60);
@@ -13,7 +13,7 @@ function timeLeft(milliseconds) {
   return 'Expired';
 }
 
-module.exports = function (file, state, emit) {
+module.exports = function(file, state, emit) {
   const url = `${file.url}#${file.secretKey}`;
   const future = new Date();
   future.setTime(file.creationDate.getTime() + file.expiry);
@@ -24,19 +24,31 @@ module.exports = function (file, state, emit) {
     <td>${file.name}</td>
     <td>
       <span class="icon-docs">${state.translate('copyUrlHover')}</span>
-      <img onclick=${copyClick} src="${assets.get('copy-16.svg')}" class="icon-copy" title="${state.translate('copyUrlHover')}">
-      <span class="text-copied" hidden="true">${state.translate('copiedUrl')}</span>
+      <img onclick=${copyClick} src="${assets.get(
+    'copy-16.svg'
+  )}" class="icon-copy" title="${state.translate('copyUrlHover')}">
+      <span class="text-copied" hidden="true">${state.translate(
+        'copiedUrl'
+      )}</span>
     </td>
     <td>${timeLeft(countdown)}</td>
     <td>
-      <span class="icon-cancel-1" title="${state.translate('deleteButtonHover')}">${state.translate('deleteButtonHover')}</span>
-      <img onclick=${showPopup} src="${assets.get('close-16.svg')}" class="icon-delete" title="${state.translate('deleteButtonHover')}">
+      <span class="icon-cancel-1" title="${state.translate(
+        'deleteButtonHover'
+      )}">${state.translate('deleteButtonHover')}</span>
+      <img onclick=${showPopup} src="${assets.get(
+    'close-16.svg'
+  )}" class="icon-delete" title="${state.translate('deleteButtonHover')}">
       <div class="popup">
         <div class="popuptext" onclick=${stopProp} onblur=${cancel} tabindex="-1">
           <div class="popup-message">${state.translate('deletePopupText')}</div>
           <div class="popup-action">
-            <span class="popup-no" onclick=${cancel}>${state.translate('deletePopupCancel')}</span>
-            <span class="popup-yes" onclick=${deleteFile}>${state.translate('deletePopupYes')}</span>
+            <span class="popup-no" onclick=${cancel}>${state.translate(
+    'deletePopupCancel'
+  )}</span>
+            <span class="popup-yes" onclick=${deleteFile}>${state.translate(
+    'deletePopupYes'
+  )}</span>
           </div>
         </div>
       </div>
@@ -73,8 +85,8 @@ module.exports = function (file, state, emit) {
   }
 
   function deleteFile(e) {
-    emit('delete', file)
+    emit('delete', file);
   }
 
   return row;
-}
+};
