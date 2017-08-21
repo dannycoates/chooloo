@@ -11,7 +11,7 @@ module.exports = function (state, emit) {
       <div>${state.translate('uploadPageExplainer')}</div>
       <a href="https://testpilot.firefox.com/experiments/send" class="link">${state.translate('uploadPageLearnMore')}</a>
     </div>
-    <div class="upload-window" >
+    <div class="upload-window" ondragover=${dragover} ondragleave=${dragleave}>
       <div id="upload-img"><img src="${assets.get('upload.svg')}"/>${state.translate('uploadSvgAlt')}</div>
       <div id="upload-text">${state.translate('uploadPageDropMessage')}</div>
       <span id="file-size-msg"><em>${state.translate('uploadPageSizeMessage')}</em></span>
@@ -24,19 +24,17 @@ module.exports = function (state, emit) {
   </div>
   `;
 
+  function dragover(event) {
+    event.target.classList.add('ondrag')
+  }
+
+  function dragleave(event) {
+    event.target.classList.remove('ondrag')
+  }
+
   async function upload(event) {
     event.preventDefault();
-    const clickOrDrop = event.type === 'drop' ? 'drop' : 'click';
-    const target = clickOrDrop === 'drop' ? event.dataTransfer : event.target;
-    if (clickOrDrop === 'drop') {
-      emit('endDrag');
-    }
-    if (target.files.length === 0) {
-      return;
-    }
-    if (target.files.length > 1 || target.files[0].size === 0) {
-      return alert(state.translate('uploadPageMultipleFilesAlert'))
-    }
+    const target = event.target;
     const file = target.files[0];
     await fadeOut('page-one')
     emit('upload', file)

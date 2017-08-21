@@ -18,18 +18,21 @@ function saveFile(file) {
   URL.revokeObjectURL(downloadUrl);
 }
 
-function openLinksInNewTab(should = true) {
-  const links = Array.from(document.querySelectorAll('a:not([target])'))
+function openLinksInNewTab(links, should = true) {
+  links = links || Array.from(document.querySelectorAll('a:not([target])'))
   if (should) {
-    return links.forEach(l => {
+    links.forEach(l => {
       l.setAttribute('target', '_blank');
       l.setAttribute('rel', 'noopener noreferrer');
     });
   }
-  links.forEach(l => {
-      l.removeAttribute('target');
-      l.removeAttribute('rel');
-    });
+  else {
+    links.forEach(l => {
+        l.removeAttribute('target');
+        l.removeAttribute('rel');
+      });
+  }
+  return links
 }
 
 export default function (state, emitter) {
@@ -58,11 +61,14 @@ export default function (state, emitter) {
     state.sender = sender
     state.panel = 'upload'
     render()
+    const links = openLinksInNewTab()
+    await delay(200)
     const info = await sender.upload()
     await delay(1000)
     await fadeOut('upload-progress')
     state.panel = 'share'
     state.upload = info
+    openLinksInNewTab(links, false)
     render()
   })
 
@@ -73,12 +79,12 @@ export default function (state, emitter) {
     receiver.on('decrypting', render)
     state.receiver = receiver
     state.panel = 'download'
-    openLinksInNewTab()
+    const links = openLinksInNewTab()
     render()
     const f = await receiver.download()
     saveFile(f)
     state.panel = 'completed'
-    openLinksInNewTab(false)
+    openLinksInNewTab(links, false)
     render()
   })
 }

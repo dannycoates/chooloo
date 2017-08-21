@@ -1,6 +1,6 @@
 const html = require('choo/html')
 const progress = require('./progress')
-const { bytes } = require('../utils')
+const { bytes, fadeOut } = require('../utils')
 
 module.exports = function (state, emit) {
   const receiver = state.receiver
@@ -18,9 +18,10 @@ module.exports = function (state, emit) {
   </div>
   `
 
-  function sendNew(e) {
-    state.panel = 'welcome'
-    emit('render')
+  async function sendNew(e) {
+    e.preventDefault();
+    await fadeOut('download')
+    emit('pushState', '/')
   }
 
   return div;
