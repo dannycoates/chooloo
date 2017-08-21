@@ -21,9 +21,11 @@ module.exports = function (app) {
   );
   app.use(bodyParser.json());
   app.get('/', defaults.index)
+  app.get('/jsconfig.js', require('./jsconfig'))
   app.get('/download/:id', defaults.download)
   app.post('/api/upload', require('./upload'))
   app.get('/api/download/:id', require('./download'))
+  app.post('/api/delete/:id', require('./delete'))
 
   app.get('/__lbheartbeat__', function (req, res) {
     res.sendStatus(200)

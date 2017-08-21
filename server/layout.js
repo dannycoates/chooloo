@@ -27,7 +27,7 @@ module.exports = function (state, body = '') {
     <link rel="stylesheet" type="text/css" href="${assets.get('main.css')}" />
     <link rel="icon" type="image/png" href="${assets.get('favicon-32x32.png')}" sizes="32x32" />
     ${firaTag}
-    <script src="/jsconfig.js"></script>
+    <script defer src="/jsconfig.js"></script>
     <script defer src="${assets.get('vendor.js')}"></script>
     <script defer src="${locales.get(state.locale)}"></script>
     <script defer src="${assets.get('app.js')}"></script>

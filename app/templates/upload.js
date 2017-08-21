@@ -5,7 +5,7 @@ const { bytes } = require('../utils')
 module.exports = function (state, emit) {
   const sender = state.sender
   const div = html`
-  <div id="upload-progress">
+  <div id="upload-progress" class="fadeIn">
     <div class="title" id="upload-filename">${
       state.translate('uploadingPageProgress', {
         filename: sender.file.name,
@@ -20,6 +20,5 @@ module.exports = function (state, emit) {
     </div>
   </div>
   `
-
   return div;
 }

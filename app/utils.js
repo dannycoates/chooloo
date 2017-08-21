@@ -135,9 +135,22 @@ function allowedCopy() {
   return support ? document.queryCommandSupported('copy') : false;
 }
 
+function delay(delay = 100) {
+  return new Promise(resolve => setTimeout(resolve, delay))
+}
+
+function fadeOut(id) {
+  const classes = document.getElementById(id).classList;
+  classes.remove('fadeIn')
+  classes.add('fadeOut')
+  return delay(300)
+}
+
 const ONE_DAY_IN_MS = 86400000;
 
 module.exports = {
+  fadeOut,
+  delay,
   allowedCopy,
   bytes,
   percent,

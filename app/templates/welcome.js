@@ -1,10 +1,11 @@
 const html = require('choo/html')
 const assets = require('../../common/assets')
 const fileList = require('./file_list')
+const { fadeOut } = require('../utils')
 
 module.exports = function (state, emit) {
   const div = html`
-  <div id="page-one">
+  <div id="page-one" class="fadeIn">
     <div class="title">${state.translate('uploadPageHeader')}</div>
     <div class="description">
       <div>${state.translate('uploadPageExplainer')}</div>
@@ -23,7 +24,7 @@ module.exports = function (state, emit) {
   </div>
   `;
 
-  function upload(event) {
+  async function upload(event) {
     event.preventDefault();
     const clickOrDrop = event.type === 'drop' ? 'drop' : 'click';
     const target = clickOrDrop === 'drop' ? event.dataTransfer : event.target;
@@ -37,6 +38,7 @@ module.exports = function (state, emit) {
       return alert(state.translate('uploadPageMultipleFilesAlert'))
     }
     const file = target.files[0];
+    await fadeOut('page-one')
     emit('upload', file)
   }
 

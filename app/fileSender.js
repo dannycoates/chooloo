@@ -25,7 +25,7 @@ export default class FileSender extends Nanobus {
         return reject();
       }
       const xhr = new XMLHttpRequest();
-      xhr.open('post', '/api/delete/' + fileId, true);
+      xhr.open('POST', `/api/delete/${fileId}`);
       xhr.setRequestHeader('Content-Type', 'application/json');
 
       xhr.onreadystatechange = () => {
@@ -81,7 +81,8 @@ export default class FileSender extends Nanobus {
       xhr.onreadystatechange = () => {
         if (xhr.readyState === XMLHttpRequest.DONE) {
           if (xhr.status === 200) {
-            this.msg = 'completed'
+            this.progress = [1,1]
+            this.msg = 'notifyUploadDone'
             const responseObj = JSON.parse(xhr.responseText);
             return resolve({
               url: responseObj.url,
@@ -90,7 +91,7 @@ export default class FileSender extends Nanobus {
               deleteToken: responseObj.delete
             });
           }
-          this.msg = 'errored'
+          this.msg = 'errorPageHeader'
           reject(xhr.status);
         }
       };

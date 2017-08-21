@@ -154,6 +154,26 @@ a {
 
 /**   page-one    **/
 
+.fadeOut {
+  opacity: 0;
+  animation: fadeout 200ms linear;
+}
+
+@keyframes fadeout {
+  0% { opacity: 1 }
+  100% { opacity: 0 }
+}
+
+.fadeIn {
+  opacity: 1;
+  animation: fadein 200ms linear;
+}
+
+@keyframes fadein {
+  0% { opacity: 0 }
+  100% { opacity: 1 }
+}
+
 .title {
   font-size: 33px;
   line-height: 40px;
