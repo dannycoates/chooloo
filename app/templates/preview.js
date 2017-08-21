@@ -1,9 +1,12 @@
 const html = require('choo/html')
 const assets = require('../../common/assets')
+const notFound = require('./notFound')
 const { bytes } = require('../utils')
 
 function getFileFromDOM() {
-  const data = document.getElementById('dl-file').dataset;
+  const el = document.getElementById('dl-file')
+  if (!el) { return null }
+  const data = el.dataset;
   return {
     name: data.name,
     size: parseInt(data.size, 10),
@@ -12,11 +15,12 @@ function getFileFromDOM() {
 }
 
 module.exports = function (state, emit) {
+  state.file = state.file || getFileFromDOM()
   if (!state.file) {
-    state.file = getFileFromDOM()
-    state.file.id = state.params.fileId
-    state.file.key = state.params.key
+    return notFound(state, emit)
   }
+  state.file.id = state.params.fileId
+  state.file.key = state.params.key
   const file = state.file
   const size = bytes(file.size)
   const div = html`

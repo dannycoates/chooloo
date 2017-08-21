@@ -19,11 +19,12 @@ module.exports = {
       layout,
       files: []}))
     },
-  download: async function (req, res) {
+
+  download: async function (req, res, next) {
     const locale = req.language || 'en-US'
     const id = req.params.id;
     if (!validateID(id)) {
-      return res.status(404);
+      return next();
     }
 
     try {
@@ -45,7 +46,44 @@ module.exports = {
         }
       }))
     } catch (e) {
-      res.status(404);
+      next();
     }
+  },
+
+  unsupported: function (req, res) {
+    const locale = req.language || 'en-US'
+    res.send(routes.toString(`/unsupported/${req.params.reason}`, {
+      locale,
+      layout,
+      fira: true,
+      translate: locales.getTranslator(locale),
+      title: 'Firefox Send',
+      description: 'Yo!',
+      baseUrl: 'http://localhost:3000'
+    }))
+  },
+
+  legal: function (req, res) {
+    const locale = req.language || 'en-US'
+    res.send(routes.toString('/legal', {
+      locale,
+      layout,
+      translate: locales.getTranslator(locale),
+      title: 'Firefox Send',
+      description: 'Yo!',
+      baseUrl: 'http://localhost:3000'
+    }))
+  },
+
+  notfound: function (req, res) {
+    const locale = req.language || 'en-US'
+    res.status(404).send(routes.toString('/404', {
+      locale,
+      layout,
+      translate: locales.getTranslator(locale),
+      title: 'Firefox Send',
+      description: 'Yo!',
+      baseUrl: 'http://localhost:3000'
+    }))
   }
 }

@@ -3,13 +3,10 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
-  "availableLanguages": [
-    "en-US",
-    "de"
-  ],
   "scripts": {
     "clean": "rimraf dist",
     "build": "npm run clean && webpack -p",
+    "format": "prettier '!(dist|node_modules)/**/*.{js,css}' --single-quote --write",
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "webpack-dev-server",
     "prod": "node server/prod.js"
@@ -34,6 +31,7 @@
     "html-loader": "^0.5.1",
     "nanobus": "^4.2.0",
     "postcss-loader": "^2.0.6",
+    "prettier": "^1.5.3",
     "require-from-string": "^1.2.1",
     "rimraf": "^2.6.1",
     "val-loader": "^1.0.2",
@@ -54,5 +52,9 @@
     "helmet": "^3.8.1",
     "mozlog": "^2.1.1",
     "redis": "^2.8.0"
-  }
+  },
+  "availableLanguages": [
+    "en-US",
+    "de"
+  ]
 }

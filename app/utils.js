@@ -35,9 +35,19 @@ function notify(str) {
   */
 }
 
-function gcmCompliant() {
+function loadShim() {
+  return new Promise((resolve, reject) => {
+    const shim = document.createElement('script');
+    shim.src = '/cryptofill.js';
+    shim.addEventListener('load', resolve(true));
+    shim.addEventListener('error', resolve(false));
+    document.head.appendChild(shim);
+  });
+}
+
+async function canHasSend() {
   try {
-    return window.crypto.subtle
+    const key = await window.crypto.subtle
       .generateKey(
         {
           name: 'AES-GCM',
@@ -46,36 +56,20 @@ function gcmCompliant() {
         true,
         ['encrypt', 'decrypt']
       )
-      .then(key => {
-        return window.crypto.subtle
+
+    await window.crypto.subtle
           .encrypt(
             {
               name: 'AES-GCM',
               iv: window.crypto.getRandomValues(new Uint8Array(12)),
-              additionalData: window.crypto.getRandomValues(new Uint8Array(6)),
               tagLength: 128
             },
             key,
             new ArrayBuffer(8)
           )
-          .then(() => {
-            return Promise.resolve();
-          });
-      })
-      .catch(err => {
-        return loadShim();
-      });
+    return true;
   } catch (err) {
     return loadShim();
-  }
-  function loadShim() {
-    return new Promise((resolve, reject) => {
-      const shim = document.createElement('script');
-      shim.src = '/cryptofill.js';
-      shim.addEventListener('load', resolve);
-      shim.addEventListener('error', reject);
-      document.head.appendChild(shim);
-    });
   }
 }
 
@@ -158,7 +152,7 @@ module.exports = {
   arrayToHex,
   hexToArray,
   notify,
-  gcmCompliant,
+  canHasSend,
   isFile,
   ONE_DAY_IN_MS
 };
