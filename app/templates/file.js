@@ -14,13 +14,10 @@ function timeLeft(milliseconds) {
 }
 
 module.exports = function(file, state, emit) {
-  const url = `${file.url}#${file.secretKey}`;
-  const future = new Date();
-  future.setTime(file.creationDate.getTime() + file.expiry);
-  const countdown = future.getTime() - Date.now();
+  const ttl = file.expiresAt - Date.now();
 
   const row = html`
-  <tr>
+  <tr id="${file.id}">
     <td>${file.name}</td>
     <td>
       <span class="icon-docs">${state.translate('copyUrlHover')}</span>
@@ -31,7 +28,7 @@ module.exports = function(file, state, emit) {
         'copiedUrl'
       )}</span>
     </td>
-    <td>${timeLeft(countdown)}</td>
+    <td>${timeLeft(ttl)}</td>
     <td>
       <span class="icon-cancel-1" title="${state.translate(
         'deleteButtonHover'
@@ -57,7 +54,7 @@ module.exports = function(file, state, emit) {
   `;
 
   function copyClick(e) {
-    emit('copy', url);
+    emit('copy', file.url);
     const icon = e.target;
     const text = e.target.nextSibling;
     icon.hidden = true;
@@ -69,7 +66,8 @@ module.exports = function(file, state, emit) {
   }
 
   function showPopup(e) {
-    const popup = row.querySelector('.popuptext');
+    const tr = document.getElementById(file.id);
+    const popup = tr.querySelector('.popuptext');
     popup.classList.add('show');
     popup.focus();
   }
@@ -80,7 +78,8 @@ module.exports = function(file, state, emit) {
 
   function cancel(e) {
     e.stopPropagation();
-    const popup = row.querySelector('.popuptext');
+    const tr = document.getElementById(file.id);
+    const popup = tr.querySelector('.popuptext');
     popup.classList.remove('show');
   }
 

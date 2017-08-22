@@ -16,7 +16,7 @@ module.exports = function(state, emit) {
     <div class="description">${state.translate('downloadingPageMessage')}</div>
     ${progress(transfer)}
     <div class="upload">
-      <div class="progress-text">${state.translate(transfer.msg)}</div>
+      <div class="progress-text">${state.translate(transfer.msg, transfer.sizes)}</div>
     </div>
   </div>
   `;

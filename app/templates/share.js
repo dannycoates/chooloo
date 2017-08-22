@@ -1,6 +1,6 @@
 const html = require('choo/html');
 const assets = require('../../common/assets');
-const { allowedCopy, copyToClipboard, delay, fadeOut } = require('../utils');
+const { allowedCopy, delay, fadeOut } = require('../utils');
 
 module.exports = function(state, emit) {
   const div = html`
@@ -33,7 +33,8 @@ module.exports = function(state, emit) {
   }
 
   async function copyLink() {
-    if (allowedCopy() && copyToClipboard(state.fileInfo.url)) {
+    if (allowedCopy()) {
+      emit('copy', state.fileInfo.url)
       const copyBtn = document.getElementById('copy-btn');
       copyBtn.disabled = true;
       copyBtn.replaceChild(
@@ -42,8 +43,8 @@ module.exports = function(state, emit) {
         )}" class="icon-check"></img>`,
         copyBtn.firstChild
       );
-      await delay(3000);
-      copyBtn.disabled = !allowedCopy();
+      await delay(2000);
+      copyBtn.disabled = false;
       copyBtn.textContent = state.translate('copyUrlFormButton');
     }
   }

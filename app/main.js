@@ -6,18 +6,17 @@ import fileManager from './fileManager';
 import dragManager from './dragManager';
 import { canHasSend } from './utils';
 import assets from '../common/assets';
+import storage from './storage'
 
 app.use(log());
 
 app.use((state, emitter) => {
   // init state
   state.ui = {};
-  state.upload = null;
-  state.download = null;
   state.transfer = null;
   state.fileInfo = null;
   state.translate = locale.getTranslator();
-  state.files = [];
+  state.storage = storage;
   emitter.on('DOMContentLoaded', async () => {
     const ok = await canHasSend(assets.get('cryptofill.js'));
     if (!ok) {

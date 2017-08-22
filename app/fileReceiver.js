@@ -1,5 +1,5 @@
 import Nanobus from 'nanobus';
-import { hexToArray } from './utils';
+import { hexToArray, bytes } from './utils';
 
 export default class FileReceiver extends Nanobus {
   constructor(url, k) {
@@ -19,12 +19,23 @@ export default class FileReceiver extends Nanobus {
       ['decrypt']
     );
     this.url = url;
-    this.msg = 'importingFile';
+    this.msg = 'fileSizeProgress';
     this.progress = [0, 1];
   }
 
   get progressRatio() {
     return this.progress[0] / this.progress[1];
+  }
+
+  get sizes() {
+    return {
+      partialSize: bytes(this.progress[0]),
+      totalSize: bytes(this.progress[1])
+    }
+  }
+
+  cancel() {
+    // TODO
   }
 
   downloadFile() {

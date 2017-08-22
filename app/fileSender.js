@@ -1,5 +1,5 @@
 import Nanobus from 'nanobus';
-import { arrayToHex } from './utils';
+import { arrayToHex, bytes } from './utils';
 
 export default class FileSender extends Nanobus {
   constructor(file) {
@@ -7,6 +7,7 @@ export default class FileSender extends Nanobus {
     this.file = file;
     this.msg = 'importingFile';
     this.progress = [0, 1];
+    this.cancelled = false;
     this.iv = window.crypto.getRandomValues(new Uint8Array(12));
     this.uploadXHR = new XMLHttpRequest();
     this.key = window.crypto.subtle.generateKey(
@@ -42,8 +43,18 @@ export default class FileSender extends Nanobus {
     return this.progress[0] / this.progress[1];
   }
 
+  get sizes() {
+    return {
+      partialSize: bytes(this.progress[0]),
+      totalSize: bytes(this.progress[1])
+    }
+  }
+
   cancel() {
-    this.uploadXHR.abort();
+    this.cancelled = true;
+    if (this.msg === 'fileSizeProgress') {
+      this.uploadXHR.abort();
+    }
   }
 
   readFile() {
@@ -92,7 +103,7 @@ export default class FileSender extends Nanobus {
             });
           }
           this.msg = 'errorPageHeader';
-          reject(xhr.status);
+          reject(new Error(xhr.status));
         }
       };
 
@@ -105,13 +116,14 @@ export default class FileSender extends Nanobus {
         })
       );
       xhr.send(fd);
+      this.msg = 'fileSizeProgress';
     });
   }
 
   async upload() {
-    this.emit('loading');
     const key = await this.key;
     const plaintext = await this.readFile();
+    if (this.cancelled) { throw new Error(0) }
     this.msg = 'encryptingFile';
     this.emit('encrypting');
     const encrypted = await window.crypto.subtle.encrypt(
@@ -123,6 +135,7 @@ export default class FileSender extends Nanobus {
       key,
       plaintext
     );
+    if (this.cancelled) { throw new Error(0) }
     const keydata = await window.crypto.subtle.exportKey('jwk', key);
     return this.uploadFile(encrypted, keydata);
   }
