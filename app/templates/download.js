@@ -3,20 +3,20 @@ const progress = require('./progress');
 const { bytes } = require('../utils');
 
 module.exports = function(state, emit) {
-  const receiver = state.receiver;
+  const transfer = state.transfer;
   const div = html`
   <div id="download-progress">
     <div id="dl-title" class="title">${state.translate(
       'downloadingPageProgress',
       {
-        filename: state.file.name,
-        size: bytes(state.file.size)
+        filename: state.fileInfo.name,
+        size: bytes(state.fileInfo.size)
       }
     )}</div>
     <div class="description">${state.translate('downloadingPageMessage')}</div>
-    ${progress(state.receiver)}
+    ${progress(transfer)}
     <div class="upload">
-      <div class="progress-text">${state.translate(receiver.msg)}</div>
+      <div class="progress-text">${state.translate(transfer.msg)}</div>
     </div>
   </div>
   `;

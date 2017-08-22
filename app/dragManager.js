@@ -1,12 +1,12 @@
 export default function(state, emitter) {
   emitter.on('DOMContentLoaded', () => {
     document.body.addEventListener('dragover', event => {
-      if (state.route === '/' && state.panel === 'welcome') {
+      if (state.route === '/' && state.ui.panel === 'welcome') {
         event.preventDefault();
       }
     });
     document.body.addEventListener('drop', event => {
-      if (state.route === '/' && state.panel === 'welcome') {
+      if (state.route === '/' && state.ui.panel === 'welcome') {
         event.preventDefault();
         document.querySelector('.upload-window').classList.remove('ondrag');
         const target = event.dataTransfer;

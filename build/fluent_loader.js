@@ -11,10 +11,10 @@ module.exports = \`
 if (typeof window === 'undefined') {
   var fluent = require('fluent');
 }
-const ctx = new fluent.MessageContext('${locale}');
+var ctx = new fluent.MessageContext('${locale}');
 ctx.addMessages(\\\`${source}\\\`);
 function translate(id, data) {
-  const msg = ctx.getMessage(id);
+  var msg = ctx.getMessage(id);
   return ctx.format(msg, data);
 }
 if (typeof window === 'undefined') {

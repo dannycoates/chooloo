@@ -1,7 +1,7 @@
 const express = require('express');
 const path = require('path');
 const routes = require('./routes');
-const defaults = require('./routes/default');
+const defaults = require('./routes/defaults');
 
 const app = express();
 

@@ -1,6 +1,6 @@
 const html = require('choo/html');
 const assets = require('../../common/assets');
-const fileList = require('./file_list');
+const fileList = require('./fileList');
 const { fadeOut } = require('../utils');
 
 module.exports = function(state, emit) {
@@ -43,9 +43,9 @@ module.exports = function(state, emit) {
   async function upload(event) {
     event.preventDefault();
     const target = event.target;
-    const file = target.files[0];
+    const fileInfo = target.files[0];
     await fadeOut('page-one');
-    emit('upload', file);
+    emit('upload', fileInfo);
   }
 
   if (state.layout) {

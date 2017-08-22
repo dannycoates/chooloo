@@ -46,6 +46,17 @@ module.exports = {
         ]
       },
       {
+        test: require.resolve('./assets/cryptofill'),
+        use: [
+          {
+            loader: 'file-loader',
+            options: {
+              name: '[name].[hash:8].[ext]'
+            }
+          }
+        ]
+      },
+      {
         test: /\.(svg|png|jpg)$/,
         loader: 'file-loader',
         options: {
@@ -96,9 +107,9 @@ module.exports = {
     new webpack.optimize.CommonsChunkPlugin({
       name: 'vendor'
     }),
-    // new webpack.optimize.CommonsChunkPlugin({
-    //   name: 'runtime'
-    // }),
+    new webpack.optimize.CommonsChunkPlugin({
+      name: 'runtime'
+    }),
     new ManifestPlugin()
   ],
   devServer: {

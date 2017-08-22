@@ -5,7 +5,7 @@ const requestLanguage = require('express-request-language');
 const { availableLanguages } = require('../../package.json');
 const storage = require('../storage');
 const config = require('../config');
-const defaults = require('./default');
+const defaults = require('./defaults');
 // const lang = require('fluent-langneg')
 
 module.exports = function(app) {

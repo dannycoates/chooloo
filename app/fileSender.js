@@ -19,13 +19,13 @@ export default class FileSender extends Nanobus {
     );
   }
 
-  static delete(fileId, token) {
+  static delete(id, token) {
     return new Promise((resolve, reject) => {
-      if (!fileId || !token) {
+      if (!id || !token) {
         return reject();
       }
       const xhr = new XMLHttpRequest();
-      xhr.open('POST', `/api/delete/${fileId}`);
+      xhr.open('POST', `/api/delete/${id}`);
       xhr.setRequestHeader('Content-Type', 'application/json');
 
       xhr.onreadystatechange = () => {
@@ -63,7 +63,7 @@ export default class FileSender extends Nanobus {
   uploadFile(encrypted, keydata) {
     return new Promise((resolve, reject) => {
       const file = this.file;
-      const fileId = arrayToHex(this.iv);
+      const id = arrayToHex(this.iv);
       const dataView = new DataView(encrypted);
       const blob = new Blob([dataView], { type: file.type });
       const fd = new FormData();
@@ -86,7 +86,7 @@ export default class FileSender extends Nanobus {
             const responseObj = JSON.parse(xhr.responseText);
             return resolve({
               url: responseObj.url,
-              fileId: responseObj.id,
+              id: responseObj.id,
               secretKey: keydata.k,
               deleteToken: responseObj.delete
             });
@@ -100,7 +100,7 @@ export default class FileSender extends Nanobus {
       xhr.setRequestHeader(
         'X-File-Metadata',
         JSON.stringify({
-          id: fileId,
+          id: id,
           filename: encodeURIComponent(file.name)
         })
       );

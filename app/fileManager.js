@@ -39,14 +39,13 @@ export default function(state, emitter) {
     emitter.emit('render');
   }
 
-  emitter.on('delete', async file => {
+  emitter.on('delete', async fileInfo => {
     try {
-      await FileSender.delete(file.fileId, file.deleteToken);
-      state.files = state.files.filter(f => f !== file);
-      state.panel = 'welcome';
-      state.upload = null;
-      state.file = null;
-      state.sender = null;
+      await FileSender.delete(fileInfo.id, fileInfo.deleteToken);
+      state.files = state.files.filter(f => f !== fileInfo);
+      state.ui.panel = 'welcome';
+      state.fileInfo = null;
+      state.transfer = null;
     } catch (e) {}
     render();
   });
@@ -55,17 +54,19 @@ export default function(state, emitter) {
     const sender = new FileSender(file);
     sender.on('progress', render);
     sender.on('encrypting', render);
-    state.file = file;
-    state.sender = sender;
-    state.panel = 'upload';
+    state.fileInfo = file;
+    state.transfer = sender;
+    state.ui.panel = 'upload';
     render();
     const links = openLinksInNewTab();
     await delay(200);
     const info = await sender.upload();
     await delay(1000);
     await fadeOut('upload-progress');
-    state.panel = 'share';
-    state.upload = info;
+    state.ui.panel = 'share';
+    state.fileInfo.url = `${info.url}#${info.secretKey}`;
+    state.fileInfo.id = info.id;
+    state.fileInfo.deleteToken = info.deleteToken;
     openLinksInNewTab(links, false);
     render();
   });
@@ -75,13 +76,13 @@ export default function(state, emitter) {
     const receiver = new FileReceiver(url, file.key);
     receiver.on('progress', render);
     receiver.on('decrypting', render);
-    state.receiver = receiver;
-    state.panel = 'download';
+    state.transfer = receiver;
+    state.ui.panel = 'download';
     const links = openLinksInNewTab();
     render();
     const f = await receiver.download();
     saveFile(f);
-    state.panel = 'completed';
+    state.ui.panel = 'completed';
     openLinksInNewTab(links, false);
     render();
   });

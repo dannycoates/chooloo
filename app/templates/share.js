@@ -3,18 +3,15 @@ const assets = require('../../common/assets');
 const { allowedCopy, copyToClipboard, delay, fadeOut } = require('../utils');
 
 module.exports = function(state, emit) {
-  const upload = state.upload;
-  const file = state.file;
-  const url = `${upload.url}#${upload.secretKey}`;
   const div = html`
   <div id="share-link" class="fadeIn">
     <div class="title">${state.translate('uploadSuccessTimingHeader')}</div>
     <div id="share-window">
       <div id="copy-text">${state.translate('copyUrlFormLabelWithName', {
-        filename: file.name
+        filename: state.fileInfo.name
       })}</div>
       <div id="copy">
-        <input id="link" type="url" value="${url}" readonly="true"/>
+        <input id="link" type="url" value="${state.fileInfo.url}" readonly="true"/>
         <button id="copy-btn" class="btn" onclick=${copyLink}>${state.translate(
     'copyUrlFormButton'
   )}</button>
@@ -30,13 +27,13 @@ module.exports = function(state, emit) {
   `;
 
   async function sendNew(e) {
-    state.panel = 'welcome';
+    state.ui.panel = 'welcome';
     await fadeOut('share-link');
     emit('render');
   }
 
   async function copyLink() {
-    if (allowedCopy() && copyToClipboard(url)) {
+    if (allowedCopy() && copyToClipboard(state.fileInfo.url)) {
       const copyBtn = document.getElementById('copy-btn');
       copyBtn.disabled = true;
       copyBtn.replaceChild(
@@ -53,7 +50,7 @@ module.exports = function(state, emit) {
 
   async function deleteFile(e) {
     await fadeOut('share-link');
-    emit('delete', state.upload);
+    emit('delete', state.fileInfo);
   }
   return div;
 };

@@ -35,17 +35,17 @@ function notify(str) {
   */
 }
 
-function loadShim() {
+function loadShim(polyfill) {
   return new Promise((resolve, reject) => {
     const shim = document.createElement('script');
-    shim.src = '/cryptofill.js';
-    shim.addEventListener('load', resolve(true));
-    shim.addEventListener('error', resolve(false));
+    shim.src = polyfill;
+    shim.addEventListener('load', () => resolve(true));
+    shim.addEventListener('error', () => resolve(false));
     document.head.appendChild(shim);
   });
 }
 
-async function canHasSend() {
+async function canHasSend(polyfill) {
   try {
     const key = await window.crypto.subtle.generateKey(
       {
@@ -67,7 +67,7 @@ async function canHasSend() {
     );
     return true;
   } catch (err) {
-    return loadShim();
+    return loadShim(polyfill);
   }
 }
 

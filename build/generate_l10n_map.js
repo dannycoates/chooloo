@@ -18,7 +18,6 @@ module.exports = function() {
     dependencies: dirs.map(d =>
       require.resolve(`../public/locales/${d}/send.ftl`)
     ),
-    cacheable: false,
-    extra: 'foo'
+    cacheable: false
   };
 };

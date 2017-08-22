@@ -36,6 +36,7 @@ module.exports = function(state, body = '') {
     )}" sizes="32x32" />
     ${firaTag}
     <script defer src="/jsconfig.js"></script>
+    <script defer src="${assets.get('runtime.js')}"></script>
     <script defer src="${assets.get('vendor.js')}"></script>
     <script defer src="${locales.get(state.locale)}"></script>
     <script defer src="${assets.get('app.js')}"></script>

@@ -3,7 +3,7 @@ const progress = require('./progress');
 const { bytes, fadeOut } = require('../utils');
 
 module.exports = function(state, emit) {
-  const receiver = state.receiver;
+  const transfer = state.transfer;
   const div = html`
   <div id="download">
     <div id="download-progress">
@@ -11,9 +11,9 @@ module.exports = function(state, emit) {
         'downloadFinish'
       )}</div>
       <div class="description">${state.translate('downloadNotification')}</div>
-      ${progress(state.receiver)}
+      ${progress(transfer)}
       <div class="upload">
-        <div class="progress-text">${state.translate(receiver.msg)}</div>
+        <div class="progress-text">${state.translate(transfer.msg)}</div>
       </div>
     </div>
     <a class="send-new" data-state="completed" href="/" onclick=${sendNew}>${state.translate(

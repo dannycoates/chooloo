@@ -13,7 +13,6 @@ module.exports = function() {
   return {
     code,
     dependencies: files.map(f => require.resolve('../assets/' + f)),
-    cacheable: false,
-    extra: 'foo'
+    cacheable: false
   };
 };

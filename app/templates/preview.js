@@ -17,25 +17,25 @@ function getFileFromDOM() {
 }
 
 module.exports = function(state, emit) {
-  state.file = state.file || getFileFromDOM();
-  if (!state.file) {
+  state.fileInfo = state.fileInfo || getFileFromDOM();
+  if (!state.fileInfo) {
     return notFound(state, emit);
   }
-  state.file.id = state.params.fileId;
-  state.file.key = state.params.key;
-  const file = state.file;
-  const size = bytes(file.size);
+  state.fileInfo.id = state.params.id;
+  state.fileInfo.key = state.params.key;
+  const fileInfo = state.fileInfo;
+  const size = bytes(fileInfo.size);
   const div = html`
   <div id="page-one">
     <div id="download">
       <div id="download-page-one">
         <div class="title">
           <span id="dl-file"
-            data-name="${file.name}"
-            data-size="${file.size}"
-            data-ttl="${file.ttl}">${state.translate(
+            data-name="${fileInfo.name}"
+            data-size="${fileInfo.size}"
+            data-ttl="${fileInfo.ttl}">${state.translate(
     'downloadingPageProgress',
-    { filename: file.name, size }
+    { filename: fileInfo.name, size }
   )}</span>
         </div>
         <div class="description">${state.translate('downloadMessage')}</div>
@@ -53,7 +53,7 @@ module.exports = function(state, emit) {
   `;
   function download(event) {
     event.preventDefault();
-    emit('download', file);
+    emit('download', fileInfo);
   }
 
   if (state.layout) {
