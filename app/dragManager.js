@@ -1,12 +1,12 @@
 export default function(state, emitter) {
   emitter.on('DOMContentLoaded', () => {
     document.body.addEventListener('dragover', event => {
-      if (state.route === '/' && state.ui.panel === 'welcome') {
+      if (state.route === '/') {
         event.preventDefault();
       }
     });
     document.body.addEventListener('drop', event => {
-      if (state.route === '/' && state.ui.panel === 'welcome') {
+      if (state.route === '/' && !state.transfer) {
         event.preventDefault();
         document.querySelector('.upload-window').classList.remove('ondrag');
         const target = event.dataTransfer;
@@ -17,7 +17,7 @@ export default function(state, emitter) {
           return alert(state.translate('uploadPageMultipleFilesAlert'));
         }
         const file = target.files[0];
-        emitter.emit('upload', file);
+        emitter.emit('upload', { file, type: 'drop' });
       }
     });
   });

@@ -1,19 +1,17 @@
 const choo = require('choo');
-const home = require('./home');
 const download = require('./download');
-const unsupported = require('../templates/unsupported');
-const legal = require('../templates/legal');
-const notFound = require('../templates/notFound');
-const error = require('../templates/error');
 
 const app = choo();
 
-app.route('/', home);
+app.route('/', require('./home'));
+app.route('/share/:id', require('../templates/share'));
 app.route('/download/:id', download);
 app.route('/download/:id/:key', download);
-app.route('/unsupported/:reason', unsupported);
-app.route('/legal', legal);
-app.route('/error', error);
-app.route('*', notFound);
+app.route('/completed', require('../templates/completed'));
+app.route('/unsupported/:reason', require('../templates/unsupported'));
+app.route('/legal', require('../templates/legal'));
+app.route('/error', require('../templates/error'));
+app.route('/blank', require('../templates/blank'));
+app.route('*', require('../templates/notFound'));
 
 module.exports = app;

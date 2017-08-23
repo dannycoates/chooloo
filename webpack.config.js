@@ -24,7 +24,7 @@ module.exports = {
         ],
         options: {
           babelrc: false,
-          presets: [['env', { modules: false }]],
+          presets: [['env', { modules: false }], 'stage-2'],
           plugins: ['yo-yoify']
         }
       },

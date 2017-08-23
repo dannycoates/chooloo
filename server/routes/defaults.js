@@ -11,6 +11,10 @@ module.exports = {
     res.send(routes.toString('/', state(req)));
   },
 
+  blank: function(req, res) {
+    res.send(routes.toString('/blank', state(req)));
+  },
+
   download: async function(req, res, next) {
     const id = req.params.id;
     if (!validateID(id)) {

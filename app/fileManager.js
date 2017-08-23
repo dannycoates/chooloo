@@ -1,6 +1,7 @@
 import FileSender from './fileSender';
 import FileReceiver from './fileReceiver';
 import { copyToClipboard, delay, fadeOut } from './utils';
+import * as metrics from './metrics';
 
 function saveFile(file) {
   const dataView = new DataView(file.plaintext);
@@ -61,115 +62,121 @@ export default function(state, emitter) {
     const files = state.storage.files;
     let rerender = false;
     for (let file of files) {
-      const ok = await exists(file.id)
+      const ok = await exists(file.id);
       if (!ok) {
         state.storage.remove(file.id);
         rerender = true;
-       }
+      }
     }
-    if (rerender) { render() }
+    if (rerender) {
+      render();
+    }
   }
 
-  emitter.on('DOMContentLoaded', checkFiles)
+  emitter.on('DOMContentLoaded', checkFiles);
 
-  emitter.on('navigate', checkFiles)
+  emitter.on('navigate', checkFiles);
 
   emitter.on('render', () => {
-    lastRender = Date.now()
-  })
+    lastRender = Date.now();
+  });
 
   emitter.on('delete', async fileInfo => {
     try {
-      await FileSender.delete(fileInfo.id, fileInfo.deleteToken);
+      // TODO deletedUpload
       state.storage.remove(fileInfo.id);
+      await FileSender.delete(fileInfo.id, fileInfo.deleteToken);
     } catch (e) {}
-    state.ui.panel = 'welcome';
     state.fileInfo = null;
-    state.transfer = null;
-    render();
   });
 
   emitter.on('cancel', () => {
-    state.transfer.cancel()
-    if (state.route === '/') {
-      state.ui.panel = 'welcome';
-      render();
-    }
-    else {
-      emitter.emit('pushState', '/');
-    }
-  })
+    state.transfer.cancel();
+  });
 
-  emitter.on('upload', async file => {
+  emitter.on('upload', async ({ file, type }) => {
+    const size = file.size;
     const sender = new FileSender(file);
     sender.on('progress', render);
     sender.on('encrypting', render);
     state.transfer = sender;
-    state.ui.panel = 'upload';
     render();
     const links = openLinksInNewTab();
     await delay(200);
     try {
+      const start = Date.now();
+      metrics.startedUpload({ size, type });
       const info = await sender.upload();
+      const time = Date.now() - start;
+      const speed = size / (time / 1000);
+      metrics.completedUpload({ size, time, speed, type });
       await delay(1000);
       await fadeOut('upload-progress');
       info.name = file.name; // TODO move to sender
-      info.createdAt = Date.now()
+      info.createdAt = Date.now();
       info.url = `${info.url}#${info.secretKey}`;
-      info.expiresAt = Date.now() + (EXPIRE_SECONDS * 1000);
+      info.expiresAt = Date.now() + EXPIRE_SECONDS * 1000;
       state.fileInfo = info;
       state.storage.addFile(state.fileInfo);
       openLinksInNewTab(links, false);
-      state.ui.panel = 'share';
-      render();
-    }
-    catch (e) {
-      if (e.message === '0') {
+      state.transfer = null;
+      emitter.emit('pushState', `/share/${info.id}`);
+    } catch (err) {
+      state.transfer = null;
+      if (err.message === '0') {
         //cancelled. do nothing
-        console.log('upload cancelled');
-        return;
+        metrics.cancelledUpload({ size, type });
+        return render();
       }
+      metrics.stoppedUpload({ size, type, err });
       emitter.emit('replaceState', '/error');
     }
   });
 
   emitter.on('download', async file => {
+    const size = file.size;
     const url = `/api/download/${file.id}`;
     const receiver = new FileReceiver(url, file.key);
     receiver.on('progress', render);
     receiver.on('decrypting', render);
     state.transfer = receiver;
-    state.ui.panel = 'download';
     const links = openLinksInNewTab();
     render();
     try {
+      const start = Date.now();
+      metrics.startedDownload({ size: file.size, ttl: file.ttl });
       const f = await receiver.download();
+      const time = Date.now() - start;
+      const speed = size / (time / 1000);
       saveFile(f);
-      state.ui.panel = 'completed';
-      render();
-    }
-    catch (e) {
-      const location = e.message === 'notfound' ? '/404' : '/error'
-      emitter.emit('replaceState', location)
-    }
-    finally {
+      metrics.completedDownload({ size, time, speed });
+      emitter.emit('pushState', '/completed');
+    } catch (err) {
+      console.error(err);
+      // TODO cancelled download
+      const location = err.message === 'notfound' ? '/404' : '/error';
+      if (location === '/error') {
+        metrics.stoppedDownload({ size, err }); //TODO e
+      }
+      emitter.emit('replaceState', location);
+    } finally {
+      state.transfer = null;
       openLinksInNewTab(links, false);
     }
-
   });
 
   emitter.on('copy', url => {
-    copyToClipboard(url)
-  })
+    copyToClipboard(url);
+  });
 
   setInterval(() => {
+    // poll for rerendering the file list countdown timers
     if (
       state.route === '/' &&
-      state.ui.panel === 'welcome' &&
       state.storage.files.length > 0 &&
-      Date.now() - lastRender > 30000) {
-      console.log('rerender')
-      render()
+      Date.now() - lastRender > 30000
+    ) {
+      render();
     }
-  }, 60000)
+  }, 60000);
 }

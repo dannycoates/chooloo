@@ -47,7 +47,7 @@ export default class FileSender extends Nanobus {
     return {
       partialSize: bytes(this.progress[0]),
       totalSize: bytes(this.progress[1])
-    }
+    };
   }
 
   cancel() {
@@ -123,7 +123,9 @@ export default class FileSender extends Nanobus {
   async upload() {
     const key = await this.key;
     const plaintext = await this.readFile();
-    if (this.cancelled) { throw new Error(0) }
+    if (this.cancelled) {
+      throw new Error(0);
+    }
     this.msg = 'encryptingFile';
     this.emit('encrypting');
     const encrypted = await window.crypto.subtle.encrypt(
@@ -135,7 +137,9 @@ export default class FileSender extends Nanobus {
       key,
       plaintext
     );
-    if (this.cancelled) { throw new Error(0) }
+    if (this.cancelled) {
+      throw new Error(0);
+    }
     const keydata = await window.crypto.subtle.exportKey('jwk', key);
     return this.uploadFile(encrypted, keydata);
   }

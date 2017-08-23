@@ -26,7 +26,9 @@ module.exports = function(app) {
   app.get('/', defaults.index);
   app.get('/legal', defaults.legal);
   app.get('/jsconfig.js', require('./jsconfig'));
+  app.get('/share/:id', defaults.blank);
   app.get('/download/:id', defaults.download);
+  app.get('/completed', defaults.blank);
   app.get('/unsupported/:reason', defaults.unsupported);
   app.post('/api/upload', require('./upload'));
   app.get('/api/download/:id', require('./download'));

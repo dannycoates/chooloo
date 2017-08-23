@@ -1,7 +1,7 @@
-const { MessageContext } = require('fluent')
+const { MessageContext } = require('fluent');
 
 function toJSON(map) {
-  return JSON.stringify(Array.from(map))
+  return JSON.stringify(Array.from(map));
 }
 
 module.exports = function(source) {
@@ -23,8 +23,8 @@ var ctx = new fluent.MessageContext('${locale}', {useIsolating: false});
 ctx._messages = new Map(${toJSON(context._messages)});
 function translate(id, data) {
   var msg = ctx.getMessage(id);
-  if (typeof(msg) !== 'string') {
-    msg = msg.val || msg.attrs.title || msg.attrs.alt
+  if (typeof(msg) !== 'string' && !msg.val && msg.attrs) {
+    msg = msg.attrs.title || msg.attrs.alt
   }
   return ctx.format(msg, data);
 }

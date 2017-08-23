@@ -6,13 +6,13 @@ import fileManager from './fileManager';
 import dragManager from './dragManager';
 import { canHasSend } from './utils';
 import assets from '../common/assets';
-import storage from './storage'
+import storage from './storage';
+import metrics from './metrics';
 
 app.use(log());
 
 app.use((state, emitter) => {
   // init state
-  state.ui = {};
   state.transfer = null;
   state.fileInfo = null;
   state.translate = locale.getTranslator();
@@ -26,6 +26,7 @@ app.use((state, emitter) => {
   });
 });
 
+app.use(metrics);
 app.use(fileManager);
 app.use(dragManager);
 

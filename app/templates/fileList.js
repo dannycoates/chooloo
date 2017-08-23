@@ -19,7 +19,7 @@ module.exports = function(state, emit) {
     </tbody>
   </table>
   `;
-  const list = state.storage.files.length ? table : ''
+  const list = state.storage.files.length ? table : '';
   const div = html`
   <div id="file-list">
     ${list}

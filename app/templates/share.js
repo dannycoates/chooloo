@@ -1,17 +1,22 @@
 const html = require('choo/html');
 const assets = require('../../common/assets');
+const notFound = require('./notFound');
 const { allowedCopy, delay, fadeOut } = require('../utils');
 
 module.exports = function(state, emit) {
+  const fileInfo = state.storage.getFileById(state.params.id);
+  if (!fileInfo) {
+    return notFound(state, emit);
+  }
   const div = html`
   <div id="share-link" class="fadeIn">
     <div class="title">${state.translate('uploadSuccessTimingHeader')}</div>
     <div id="share-window">
       <div id="copy-text">${state.translate('copyUrlFormLabelWithName', {
-        filename: state.fileInfo.name
+        filename: fileInfo.name
       })}</div>
       <div id="copy">
-        <input id="link" type="url" value="${state.fileInfo.url}" readonly="true"/>
+        <input id="link" type="url" value="${fileInfo.url}" readonly="true"/>
         <button id="copy-btn" class="btn" onclick=${copyLink}>${state.translate(
     'copyUrlFormButton'
   )}</button>
@@ -27,14 +32,14 @@ module.exports = function(state, emit) {
   `;
 
   async function sendNew(e) {
-    state.ui.panel = 'welcome';
+    e.preventDefault();
     await fadeOut('share-link');
-    emit('render');
+    emit('pushState', '/');
   }
 
   async function copyLink() {
     if (allowedCopy()) {
-      emit('copy', state.fileInfo.url)
+      emit('copy', fileInfo.url);
       const copyBtn = document.getElementById('copy-btn');
       copyBtn.disabled = true;
       copyBtn.replaceChild(
@@ -50,8 +55,9 @@ module.exports = function(state, emit) {
   }
 
   async function deleteFile(e) {
+    emit('delete', fileInfo);
     await fadeOut('share-link');
-    emit('delete', state.fileInfo);
+    emit('pushState', '/');
   }
   return div;
 };

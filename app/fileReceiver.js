@@ -31,7 +31,7 @@ export default class FileReceiver extends Nanobus {
     return {
       partialSize: bytes(this.progress[0]),
       totalSize: bytes(this.progress[1])
-    }
+    };
   }
 
   cancel() {

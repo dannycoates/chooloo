@@ -15,16 +15,24 @@ module.exports = function(state, emit) {
       }
     )}</div>
     <div class="description"></div>
-    ${progress(transfer)}
+    ${progress(transfer.progressRatio)}
     <div class="upload">
-      <div class="progress-text">${state.translate(transfer.msg, transfer.sizes)}</div>
-      <div id="cancel-upload" onclick=${cancel}>${state.translate('uploadingPageCancel')}</div>
+      <div class="progress-text">${state.translate(
+        transfer.msg,
+        transfer.sizes
+      )}</div>
+      <button id="cancel-upload" onclick=${cancel}>${state.translate(
+    'uploadingPageCancel'
+  )}</button>
     </div>
   </div>
   `;
 
   function cancel() {
-    emit('cancel')
+    const btn = document.getElementById('cancel-upload')
+    btn.disabled = true;
+    btn.textContent = state.translate('uploadCancelNotification');
+    emit('cancel');
   }
   return div;
 };

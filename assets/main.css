@@ -499,8 +499,16 @@ tbody {
 
 #cancel-upload {
   color: #d70022;
+  background: #fff;
+  font-size: 15px;
+  border: 0;
   cursor: pointer;
   text-decoration: underline;
+}
+
+#cancel-upload:disabled {
+  text-decoration: none;
+  cursor: auto;
 }
 
 /**   share-link    **/

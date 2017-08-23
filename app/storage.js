@@ -33,7 +33,7 @@ class Storage {
     } catch (e) {
       this.engine = new Mem();
     }
-    this._files = this.loadFiles()
+    this._files = this.loadFiles();
   }
 
   loadFiles() {
@@ -85,15 +85,15 @@ class Storage {
 
   remove(property) {
     if (isFile(property)) {
-      this._files.splice(this._files.findIndex(f => f.id === property), 1)
+      this._files.splice(this._files.findIndex(f => f.id === property), 1);
     }
     this.engine.removeItem(property);
   }
 
   addFile(file) {
-    this._files.push(file)
+    this._files.push(file);
     this.engine.setItem(file.id, JSON.stringify(file));
   }
 }
 
-export default new Storage()
+export default new Storage();
