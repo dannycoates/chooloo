@@ -10,17 +10,17 @@ function timeLeft(milliseconds) {
   } else if (hours === 0) {
     return `${minutes}m ${seconds}s`;
   }
-  return 'Expired';
+  return null;
 }
 
 module.exports = function(file, state, emit) {
   const ttl = file.expiresAt - Date.now();
-
+  const remaining = timeLeft(ttl) || state.translate('linkExpiredAlt')
   const row = html`
   <tr id="${file.id}">
     <td>${file.name}</td>
     <td>
-      <span class="icon-docs">${state.translate('copyUrlHover')}</span>
+      <span class="icon-docs"></span>
       <img onclick=${copyClick} src="${assets.get(
     'copy-16.svg'
   )}" class="icon-copy" title="${state.translate('copyUrlHover')}">
@@ -32,7 +32,7 @@ module.exports = function(file, state, emit) {
     <td>
       <span class="icon-cancel-1" title="${state.translate(
         'deleteButtonHover'
-      )}">${state.translate('deleteButtonHover')}</span>
+      )}"></span>
       <img onclick=${showPopup} src="${assets.get(
     'close-16.svg'
   )}" class="icon-delete" title="${state.translate('deleteButtonHover')}">

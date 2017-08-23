@@ -19,7 +19,8 @@ module.exports = {
         loader: 'babel-loader',
         include: [
           path.resolve(__dirname, 'app'),
-          path.resolve(__dirname, 'common')
+          path.resolve(__dirname, 'common'),
+          path.resolve(__dirname, 'node_modules/testpilot-ga/src')
         ],
         options: {
           babelrc: false,
@@ -114,6 +115,6 @@ module.exports = {
   ],
   devServer: {
     compress: true,
-    setup: require('./server/dev')
+    setup: process.env.NODE_ENV === 'development' ? require('./server/dev') : undefined
   }
 };
