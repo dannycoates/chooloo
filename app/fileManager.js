@@ -164,6 +164,8 @@ export default function(state, emitter) {
       const f = await receiver.download();
       const time = Date.now() - start;
       const speed = size / (time / 1000);
+      await delay(1000);
+      await fadeOut('download-progress');
       saveFile(f);
       state.storage.totalDownloads += 1;
       metrics.completedDownload({ size, time, speed });

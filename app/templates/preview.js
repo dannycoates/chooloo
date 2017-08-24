@@ -33,10 +33,11 @@ module.exports = function(state, emit) {
           <span id="dl-file"
             data-name="${fileInfo.name}"
             data-size="${fileInfo.size}"
-            data-ttl="${fileInfo.ttl}">${state.translate(
-    'downloadingPageProgress',
-    { filename: fileInfo.name, size }
-  )}</span>
+            data-ttl="${fileInfo.ttl}">${state.translate('downloadFileName', {
+    filename: fileInfo.name
+  })}</span>
+        <span id="dl-filesize">${' ' +
+          state.translate('downloadFileSize', { size })}</span>
         </div>
         <div class="description">${state.translate('downloadMessage')}</div>
         <img src="${assets.get(
@@ -48,6 +49,7 @@ module.exports = function(state, emit) {
   )}</button>
         </div>
       </div>
+      <a class="send-new" href="/">${state.translate('sendYourFilesLink')}</a>
     </div>
   </div>
   `;

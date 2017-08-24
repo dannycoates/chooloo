@@ -5,7 +5,7 @@ const { bytes } = require('../utils');
 module.exports = function(state) {
   const transfer = state.transfer;
   const div = html`
-  <div id="download-progress">
+  <div id="download-progress" class="fadeIn">
     <div id="dl-title" class="title">${state.translate(
       'downloadingPageProgress',
       {
