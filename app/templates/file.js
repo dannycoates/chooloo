@@ -50,7 +50,7 @@ module.exports = function(file, state, emit) {
   `;
 
   function copyClick(e) {
-    emit('copy', file.url);
+    emit('copy', { url: file.url, location: 'upload-list' });
     const icon = e.target;
     const text = e.target.nextSibling;
     icon.hidden = true;
@@ -80,7 +80,7 @@ module.exports = function(file, state, emit) {
   }
 
   function deleteFile(e) {
-    emit('delete', file);
+    emit('delete', { file, location: 'upload-list' });
     emit('render');
   }
 

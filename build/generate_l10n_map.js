@@ -7,7 +7,6 @@ function kv(d) {
 
 module.exports = function() {
   const dirs = fs.readdirSync(path.join(__dirname, '..', 'public', 'locales'));
-  // const code = dirs.map(d => `require('../public/locales/${d}/send.ftl')`).join('\n')
   const code = `
   module.exports = {
     translate: function (id, data) { return window.translate(id, data) },

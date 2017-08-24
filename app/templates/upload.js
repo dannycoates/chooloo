@@ -29,7 +29,7 @@ module.exports = function(state, emit) {
   `;
 
   function cancel() {
-    const btn = document.getElementById('cancel-upload')
+    const btn = document.getElementById('cancel-upload');
     btn.disabled = true;
     btn.textContent = state.translate('uploadCancelNotification');
     emit('cancel');

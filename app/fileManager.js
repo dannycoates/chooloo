@@ -81,11 +81,18 @@ export default function(state, emitter) {
     lastRender = Date.now();
   });
 
-  emitter.on('delete', async fileInfo => {
+  emitter.on('delete', async ({ file, location }) => {
     try {
-      // TODO deletedUpload
-      state.storage.remove(fileInfo.id);
-      await FileSender.delete(fileInfo.id, fileInfo.deleteToken);
+      metrics.deletedUpload({
+        size: file.size,
+        time: file.time,
+        speed: file.speed,
+        type: file.type,
+        ttl: file.expiresAt - Date.now(),
+        location
+      });
+      state.storage.remove(file.id);
+      await FileSender.delete(file.id, file.deleteToken);
     } catch (e) {}
     state.fileInfo = null;
   });
@@ -113,6 +120,10 @@ export default function(state, emitter) {
       await delay(1000);
       await fadeOut('upload-progress');
       info.name = file.name; // TODO move to sender
+      info.size = size;
+      info.type = type;
+      info.time = time;
+      info.speed = speed;
       info.createdAt = Date.now();
       info.url = `${info.url}#${info.secretKey}`;
       info.expiresAt = Date.now() + EXPIRE_SECONDS * 1000;
@@ -120,6 +131,7 @@ export default function(state, emitter) {
       state.storage.addFile(state.fileInfo);
       openLinksInNewTab(links, false);
       state.transfer = null;
+      state.storage.totalUploads += 1;
       emitter.emit('pushState', `/share/${info.id}`);
     } catch (err) {
       state.transfer = null;
@@ -149,6 +161,7 @@ export default function(state, emitter) {
       const time = Date.now() - start;
       const speed = size / (time / 1000);
       saveFile(f);
+      state.storage.totalDownloads += 1;
       metrics.completedDownload({ size, time, speed });
       emitter.emit('pushState', '/completed');
     } catch (err) {
@@ -165,7 +178,7 @@ export default function(state, emitter) {
     }
   });
 
-  emitter.on('copy', url => {
+  emitter.on('copy', ({ url, location }) => {
     copyToClipboard(url);
   });
 

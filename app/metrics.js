@@ -22,9 +22,6 @@ export default function initialize(state, emitter) {
     addExitHandlers();
     //TODO restart handlers... somewhere
   });
-  emitter.on('navigate', () => {
-    console.log('nav', state.route);
-  });
 }
 
 function category() {
@@ -68,6 +65,7 @@ function urlToMetric(url) {
   }
 }
 
+//TODO revisit
 function setReferrer(state) {
   if (category() === 'sender') {
     if (state) {
@@ -97,7 +95,7 @@ function startedUpload(params) {
   return sendEvent('sender', 'upload-started', {
     cm1: params.size,
     cm5: storage.totalUploads,
-    cm6: storage.numFiles + 1,
+    cm6: storage.files.length + 1,
     cm7: storage.totalDownloads,
     cd1: params.type,
     cd5: takeReferrer()
@@ -109,7 +107,7 @@ function cancelledUpload(params) {
   return sendEvent('sender', 'upload-stopped', {
     cm1: params.size,
     cm5: storage.totalUploads,
-    cm6: storage.numFiles,
+    cm6: storage.files.length,
     cm7: storage.totalDownloads,
     cd1: params.type,
     cd2: 'cancelled'
@@ -122,7 +120,7 @@ function completedUpload(params) {
     cm2: params.time,
     cm3: params.speed,
     cm5: storage.totalUploads,
-    cm6: storage.numFiles,
+    cm6: storage.files.length,
     cm7: storage.totalDownloads,
     cd1: params.type,
     cd2: 'completed'
@@ -134,7 +132,7 @@ function startedDownload(params) {
     cm1: params.size,
     cm4: params.ttl,
     cm5: storage.totalUploads,
-    cm6: storage.numFiles,
+    cm6: storage.files.length,
     cm7: storage.totalDownloads
   });
 }
@@ -143,7 +141,7 @@ function stoppedDownload(params) {
   return sendEvent('recipient', 'download-stopped', {
     cm1: params.size,
     cm5: storage.totalUploads,
-    cm6: storage.numFiles,
+    cm6: storage.files.length,
     cm7: storage.totalDownloads,
     cd2: 'errored',
     cd6: params.err
@@ -155,7 +153,7 @@ function cancelledDownload(params) {
   return sendEvent('recipient', 'download-stopped', {
     cm1: params.size,
     cm5: storage.totalUploads,
-    cm6: storage.numFiles,
+    cm6: storage.files.length,
     cm7: storage.totalDownloads,
     cd2: 'cancelled'
   });
@@ -165,7 +163,7 @@ function stoppedUpload(params) {
   return sendEvent('sender', 'upload-stopped', {
     cm1: params.size,
     cm5: storage.totalUploads,
-    cm6: storage.numFiles,
+    cm6: storage.files.length,
     cm7: storage.totalDownloads,
     cd1: params.type,
     cd2: 'errored',
@@ -179,7 +177,7 @@ function completedDownload(params) {
     cm2: params.time,
     cm3: params.speed,
     cm5: storage.totalUploads,
-    cm6: storage.numFiles,
+    cm6: storage.files.length,
     cm7: storage.totalDownloads,
     cd2: 'completed'
   });
@@ -192,7 +190,7 @@ function deletedUpload(params) {
     cm3: params.speed,
     cm4: params.ttl,
     cm5: storage.totalUploads,
-    cm6: storage.numFiles,
+    cm6: storage.files.length,
     cm7: storage.totalDownloads,
     cd1: params.type,
     cd4: params.location

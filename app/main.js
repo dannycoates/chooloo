@@ -1,7 +1,6 @@
 import app from './routes';
 import log from 'choo-log';
 import locale from '../common/locales';
-import FileReceiver from './fileReceiver';
 import fileManager from './fileManager';
 import dragManager from './dragManager';
 import { canHasSend } from './utils';
