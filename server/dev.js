@@ -1,7 +1,7 @@
 const assets = require('../common/assets');
 const locales = require('../common/locales');
 const routes = require('./routes');
-const defaults = require('./routes/defaults');
+const pages = require('./routes/pages');
 
 module.exports = function(app, devServer) {
   assets.setMiddleware(devServer.middleware);
@@ -9,5 +9,5 @@ module.exports = function(app, devServer) {
   routes(app);
   // webpack-dev-server routes haven't been added yet
   // so wait for next tick to add 404 handler
-  process.nextTick(() => app.use(defaults.notfound));
+  process.nextTick(() => app.use(pages.notfound));
 };

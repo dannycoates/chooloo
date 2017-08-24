@@ -2,17 +2,17 @@ const busboy = require('connect-busboy');
 const helmet = require('helmet');
 const bodyParser = require('body-parser');
 const requestLanguage = require('express-request-language');
-const { availableLanguages } = require('../../package.json');
+const languages = require('../languages');
 const storage = require('../storage');
 const config = require('../config');
-const defaults = require('./defaults');
+const pages = require('./pages');
 const versionFile = require.resolve('../../dist/version.json');
 // const lang = require('fluent-langneg')
 
 module.exports = function(app) {
   app.use(
     requestLanguage({
-      languages: availableLanguages
+      languages
     })
   );
   app.use(helmet());
@@ -50,13 +50,13 @@ module.exports = function(app) {
     })
   );
   app.use(bodyParser.json());
-  app.get('/', defaults.index);
-  app.get('/legal', defaults.legal);
+  app.get('/', pages.index);
+  app.get('/legal', pages.legal);
   app.get('/jsconfig.js', require('./jsconfig'));
-  app.get('/share/:id', defaults.blank);
-  app.get('/download/:id', defaults.download);
-  app.get('/completed', defaults.blank);
-  app.get('/unsupported/:reason', defaults.unsupported);
+  app.get('/share/:id', pages.blank);
+  app.get('/download/:id', pages.download);
+  app.get('/completed', pages.blank);
+  app.get('/unsupported/:reason', pages.unsupported);
   app.post('/api/upload', require('./upload'));
   app.get('/api/download/:id', require('./download'));
   app.get('/api/exists/:id', require('./exists'));

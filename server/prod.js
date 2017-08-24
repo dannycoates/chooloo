@@ -1,7 +1,13 @@
 const express = require('express');
 const path = require('path');
+const Raven = require('raven');
+const config = require('./config');
 const routes = require('./routes');
-const defaults = require('./routes/defaults');
+const pages = require('./routes/pages');
+
+if (config.sentry_dsn) {
+  Raven.config(config.sentry_dsn).install();
+}
 
 const app = express();
 
@@ -15,6 +21,6 @@ app.use(
 
 routes(app);
 
-app.use(defaults.notfound);
+app.use(pages.notfound);
 
 app.listen(1443);
