@@ -1,0 +1,10 @@
+node_modules
+.git
+.DS_Store
+firefox
+app
+assets
+docs
+public
+uploads
+test

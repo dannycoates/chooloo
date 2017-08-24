@@ -5,7 +5,7 @@ function toJSON(map) {
 }
 
 module.exports = function(source) {
-  const localeExp = this.options.locale || /([^\/]+)\/[^\/]+\.ftl$/;
+  const localeExp = this.options.locale || /([^/]+)\/[^/]+\.ftl$/;
   const result = localeExp.exec(this.resourcePath);
   const locale = result && result[1];
   // pre-parse the ftl

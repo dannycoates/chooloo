@@ -1,6 +1,6 @@
 const html = require('choo/html');
 const progress = require('./progress');
-const { bytes, fadeOut } = require('../utils');
+const { fadeOut } = require('../utils');
 
 module.exports = function(state, emit) {
   const div = html`

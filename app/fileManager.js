@@ -1,3 +1,4 @@
+/* global EXPIRE_SECONDS */
 import FileSender from './fileSender';
 import FileReceiver from './fileReceiver';
 import { copyToClipboard, delay, fadeOut } from './utils';
@@ -61,7 +62,7 @@ export default function(state, emitter) {
   async function checkFiles() {
     const files = state.storage.files;
     let rerender = false;
-    for (let file of files) {
+    for (const file of files) {
       const ok = await exists(file.id);
       if (!ok) {
         state.storage.remove(file.id);
@@ -93,7 +94,9 @@ export default function(state, emitter) {
       });
       state.storage.remove(file.id);
       await FileSender.delete(file.id, file.deleteToken);
-    } catch (e) {}
+    } catch (e) {
+      state.raven.captureException(e);
+    }
     state.fileInfo = null;
   });
 
@@ -140,6 +143,7 @@ export default function(state, emitter) {
         metrics.cancelledUpload({ size, type });
         return render();
       }
+      state.raven.captureException(err);
       metrics.stoppedUpload({ size, type, err });
       emitter.emit('replaceState', '/error');
     }
@@ -165,11 +169,11 @@ export default function(state, emitter) {
       metrics.completedDownload({ size, time, speed });
       emitter.emit('pushState', '/completed');
     } catch (err) {
-      console.error(err);
       // TODO cancelled download
       const location = err.message === 'notfound' ? '/404' : '/error';
       if (location === '/error') {
-        metrics.stoppedDownload({ size, err }); //TODO e
+        state.raven.captureException(err);
+        metrics.stoppedDownload({ size, err });
       }
       emitter.emit('replaceState', location);
     } finally {
@@ -180,6 +184,7 @@ export default function(state, emitter) {
 
   emitter.on('copy', ({ url, location }) => {
     copyToClipboard(url);
+    metrics.copiedLink({location});
   });
 
   setInterval(() => {

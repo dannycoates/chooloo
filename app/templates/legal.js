@@ -9,7 +9,7 @@ function replaceLinks(str, urls) {
   return [`<div class="description">${s}</div>`];
 }
 
-module.exports = function(state, emit) {
+module.exports = function(state) {
   const div = html`
     <div id="page-one">
       <div id="legal">

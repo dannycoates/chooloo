@@ -6,6 +6,7 @@ const { availableLanguages } = require('../../package.json');
 const storage = require('../storage');
 const config = require('../config');
 const defaults = require('./defaults');
+const versionFile = require.resolve('../../dist/version.json');
 // const lang = require('fluent-langneg')
 
 module.exports = function(app) {
@@ -34,6 +35,10 @@ module.exports = function(app) {
   app.get('/api/download/:id', require('./download'));
   app.get('/api/exists/:id', require('./exists'));
   app.post('/api/delete/:id', require('./delete'));
+
+  app.get('/__version__', function (req, res) {
+    res.sendFile(versionFile)
+  })
 
   app.get('/__lbheartbeat__', function(req, res) {
     res.sendStatus(200);

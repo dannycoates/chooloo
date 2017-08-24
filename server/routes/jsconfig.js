@@ -1,8 +1,8 @@
 const config = require('../config');
-const version = { version: 'a', commit: 'b' }; // TODO
 
 let sentry = '';
 if (config.sentry_id) {
+  const version = require('../../dist/version.json');
   sentry = `
 var RAVEN_CONFIG = {
   release: '${version.version}',
@@ -26,6 +26,7 @@ if (config.analytics_id) {
   ga = `var GOOGLE_ANALYTICS_ID = ${config.analytics_id};`;
 }
 
+/* eslint-disable no-useless-escape */
 const jsconfig = `
 var isIE = /trident\\\/7\.|msie/i.test(navigator.userAgent);
 var isUnsupportedPage = /\\\/unsupported/.test(location.pathname);

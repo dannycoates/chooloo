@@ -4,7 +4,7 @@ const ManifestPlugin = require('webpack-manifest-plugin')
 
 module.exports = {
   entry: {
-    vendor: ['babel-polyfill', 'fluent', 'choo'],
+    vendor: ['babel-polyfill', 'raven-js', 'fluent', 'choo'],
     app: ['./app/main.js']
   },
   output: {
@@ -76,6 +76,19 @@ module.exports = {
           'extract-loader',
           { loader: 'css-loader', options: { importLoaders: 1 } },
           'postcss-loader'
+        ]
+      },
+      {
+        test: require.resolve('./package.json'),
+        use: [
+          {
+            loader: 'file-loader',
+            options: {
+              name: 'version.json'
+            }
+          },
+          'extract-loader',
+          './build/package_json_loader'
         ]
       },
       {

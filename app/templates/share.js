@@ -54,7 +54,7 @@ module.exports = function(state, emit) {
     }
   }
 
-  async function deleteFile(e) {
+  async function deleteFile() {
     emit('delete', { file, location: 'success-screen' });
     await fadeOut('share-link');
     emit('pushState', '/');

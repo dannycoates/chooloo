@@ -27,7 +27,7 @@ module.exports = function(file, state, emit) {
         'copiedUrl'
       )}</span>
     </td>
-    <td>${timeLeft(ttl)}</td>
+    <td>${remaining}</td>
     <td>
       <img onclick=${showPopup} src="${assets.get(
     'close-16.svg'
@@ -61,7 +61,7 @@ module.exports = function(file, state, emit) {
     }, 500);
   }
 
-  function showPopup(e) {
+  function showPopup() {
     const tr = document.getElementById(file.id);
     const popup = tr.querySelector('.popuptext');
     popup.classList.add('show');
@@ -79,7 +79,7 @@ module.exports = function(file, state, emit) {
     popup.classList.remove('show');
   }
 
-  function deleteFile(e) {
+  function deleteFile() {
     emit('delete', { file, location: 'upload-list' });
     emit('render');
   }

@@ -2,7 +2,7 @@ const html = require('choo/html');
 const progress = require('./progress');
 const { bytes } = require('../utils');
 
-module.exports = function(state, emit) {
+module.exports = function(state) {
   const transfer = state.transfer;
   const div = html`
   <div id="download-progress">

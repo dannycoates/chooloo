@@ -224,18 +224,10 @@ function addExitHandlers() {
   });
 }
 
-function restartEvent(state) {
+function restart(state) {
   setReferrer(state);
   return sendEvent(category(), 'restarted', {
     cd2: state
-  });
-}
-
-function addRestartHandlers() {
-  const elements = Array.from(document.querySelectorAll('.send-new'));
-  elements.forEach(el => {
-    const state = el.getAttribute('data-state');
-    el.addEventListener('click', restartEvent.bind(null, state));
   });
 }
 
@@ -250,5 +242,6 @@ export {
   cancelledDownload,
   stoppedDownload,
   completedDownload,
+  restart,
   unsupported
 };

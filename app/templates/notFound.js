@@ -1,7 +1,7 @@
 const html = require('choo/html');
 const assets = require('../../common/assets');
 
-module.exports = function(state, emit) {
+module.exports = function(state) {
   const div = html`
   <div id="page-one">
     <div id="download">

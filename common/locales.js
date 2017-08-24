@@ -5,7 +5,9 @@ const prefix = isServer ? '/' : '';
 let manifest = {};
 try {
   manifest = require('../dist/manifest.json');
-} catch (e) {}
+} catch (e) {
+  // use middleware
+}
 
 const locales = isServer ? manifest : gen;
 
