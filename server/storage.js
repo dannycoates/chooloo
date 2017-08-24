@@ -2,6 +2,7 @@ const AWS = require('aws-sdk');
 const s3 = new AWS.S3();
 
 const conf = require('./config');
+const { tmpdir } = require('os');
 const fs = require('fs');
 const path = require('path');
 
@@ -18,6 +19,8 @@ const redis_client = redis.createClient({
 redis_client.on('error', err => {
   log.error('Redis:', err);
 });
+
+let tempDir = null;
 
 if (conf.s3_bucket) {
   module.exports = {
@@ -36,6 +39,8 @@ if (conf.s3_bucket) {
     metadata
   };
 } else {
+  tempDir = fs.mkdtempSync(`${tmpdir()}${path.sep}send-`);
+  log.info('tempDir', tempDir);
   module.exports = {
     filename: filename,
     exists: exists,
@@ -113,7 +118,7 @@ function setField(id, key, value) {
 function localLength(id) {
   return new Promise((resolve, reject) => {
     try {
-      resolve(fs.statSync(path.join(__dirname, '../uploads', id)).size);
+      resolve(fs.statSync(path.join(tempDir, id)).size);
     } catch (err) {
       reject();
     }
@@ -121,12 +126,12 @@ function localLength(id) {
 }
 
 function localGet(id) {
-  return fs.createReadStream(path.join(__dirname, '../uploads', id));
+  return fs.createReadStream(path.join(tempDir, id));
 }
 
 function localSet(newId, file, filename, meta) {
   return new Promise((resolve, reject) => {
-    const filepath = path.join(__dirname, '../uploads', newId);
+    const filepath = path.join(tempDir, newId);
     const fstream = fs.createWriteStream(filepath);
     file.pipe(fstream);
     file.on('limit', () => {
@@ -156,7 +161,7 @@ function localDelete(id, delete_token) {
       } else {
         redis_client.del(id);
         log.info('Deleted:', id);
-        resolve(fs.unlinkSync(path.join(__dirname, '../uploads', id)));
+        resolve(fs.unlinkSync(path.join(tempDir, id)));
       }
     });
   });
@@ -165,7 +170,7 @@ function localDelete(id, delete_token) {
 function localForceDelete(id) {
   return new Promise((resolve, reject) => {
     redis_client.del(id);
-    resolve(fs.unlinkSync(path.join(__dirname, '../uploads', id)));
+    resolve(fs.unlinkSync(path.join(tempDir, id)));
   });
 }
 

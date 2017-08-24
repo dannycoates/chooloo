@@ -184,7 +184,7 @@ export default function(state, emitter) {
 
   emitter.on('copy', ({ url, location }) => {
     copyToClipboard(url);
-    metrics.copiedLink({location});
+    metrics.copiedLink({ location });
   });
 
   setInterval(() => {

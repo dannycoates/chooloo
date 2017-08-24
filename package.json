@@ -1,9 +1,14 @@
 {
-  "name": "chooloo",
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "name": "firefox-send",
+  "description": "File Sharing Experiment",
+  "version": "1.1.2",
+  "author": "Mozilla (https://mozilla.org)",
+  "repository": "mozilla/send",
+  "homepage": "https://github.com/mozilla/send/",
+  "license": "MPL-2.0",
+  "private": true,
   "scripts": {
+    "precommit": "lint-staged",
     "clean": "rimraf dist",
     "build": "npm run clean && webpack -p",
     "lint": "npm-run-all lint:*",
@@ -14,11 +19,21 @@
     "start": "cross-env NODE_ENV=development webpack-dev-server",
     "prod": "node server/prod.js"
   },
+  "lint-staged": {
+    "*.js": [
+      "prettier --single-quote --write",
+      "eslint",
+      "git add"
+    ],
+    "*.css": [
+      "prettier --single-quote --write",
+      "stylelint",
+      "git add"
+    ]
+  },
   "engines": {
     "node": ">=8.2.0"
   },
-  "author": "",
-  "license": "MPL-2.0",
   "devDependencies": {
     "autoprefixer": "^7.1.2",
     "babel-core": "^6.26.0",
@@ -42,6 +57,8 @@
     "file-loader": "^0.11.2",
     "git-rev-sync": "^1.9.1",
     "html-loader": "^0.5.1",
+    "husky": "^0.14.3",
+    "lint-staged": "^4.0.4",
     "nanobus": "^4.2.0",
     "npm-run-all": "^4.0.2",
     "postcss-loader": "^2.0.6",

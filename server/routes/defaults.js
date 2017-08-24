@@ -6,13 +6,19 @@ function validateID(route_id) {
   return route_id.match(/^[0-9a-fA-F]{10}$/) !== null;
 }
 
+function stripEvents(str) {
+  // For CSP we need to remove all the event handler placeholders.
+  // It's ok, app.js will add them when it attaches to the DOM.
+  return str.replace(/\son\w+=""/g, '');
+}
+
 module.exports = {
   index: function(req, res) {
-    res.send(routes.toString('/', state(req)));
+    res.send(stripEvents(routes.toString('/', state(req))));
   },
 
   blank: function(req, res) {
-    res.send(routes.toString('/blank', state(req)));
+    res.send(stripEvents(routes.toString('/blank', state(req))));
   },
 
   download: async function(req, res, next) {
@@ -27,11 +33,13 @@ module.exports = {
       const size = await storage.length(id);
       const ttl = await storage.ttl(id);
       res.send(
-        routes.toString(
-          `/download/${req.params.id}`,
-          Object.assign(state(req), {
-            fileInfo: { name, size, ttl }
-          })
+        stripEvents(
+          routes.toString(
+            `/download/${req.params.id}`,
+            Object.assign(state(req), {
+              fileInfo: { name, size, ttl }
+            })
+          )
         )
       );
     } catch (e) {
@@ -41,18 +49,20 @@ module.exports = {
 
   unsupported: function(req, res) {
     res.send(
-      routes.toString(
-        `/unsupported/${req.params.reason}`,
-        Object.assign(state(req), { fira: true })
+      stripEvents(
+        routes.toString(
+          `/unsupported/${req.params.reason}`,
+          Object.assign(state(req), { fira: true })
+        )
       )
     );
   },
 
   legal: function(req, res) {
-    res.send(routes.toString('/legal', state(req)));
+    res.send(stripEvents(routes.toString('/legal', state(req))));
   },
 
   notfound: function(req, res) {
-    res.status(404).send(routes.toString('/404', state(req)));
+    res.status(404).send(stripEvents(routes.toString('/404', state(req))));
   }
 };

@@ -17,6 +17,32 @@ module.exports = function(app) {
   );
   app.use(helmet());
   app.use(
+    helmet.hsts({
+      maxAge: 31536000,
+      force: config.env === 'production'
+    })
+  );
+  app.use(
+    helmet.contentSecurityPolicy({
+      directives: {
+        defaultSrc: ["'self'"],
+        connectSrc: [
+          "'self'",
+          'https://sentry.prod.mozaws.net',
+          'https://www.google-analytics.com'
+        ],
+        imgSrc: ["'self'", 'https://www.google-analytics.com'],
+        scriptSrc: ["'self'"],
+        styleSrc: ["'self'", 'https://code.cdn.mozilla.net'],
+        fontSrc: ["'self'", 'https://code.cdn.mozilla.net'],
+        formAction: ["'none'"],
+        frameAncestors: ["'none'"],
+        objectSrc: ["'none'"],
+        reportUri: '/__cspreport__'
+      }
+    })
+  );
+  app.use(
     busboy({
       limits: {
         fileSize: config.max_file_size
@@ -36,9 +62,9 @@ module.exports = function(app) {
   app.get('/api/exists/:id', require('./exists'));
   app.post('/api/delete/:id', require('./delete'));
 
-  app.get('/__version__', function (req, res) {
-    res.sendFile(versionFile)
-  })
+  app.get('/__version__', function(req, res) {
+    res.sendFile(versionFile);
+  });
 
   app.get('/__lbheartbeat__', function(req, res) {
     res.sendStatus(200);
